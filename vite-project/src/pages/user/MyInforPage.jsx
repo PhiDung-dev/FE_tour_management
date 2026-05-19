@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import { Link } from 'react-router-dom';
 const MyInfoPage = () => {
   // Giả lập dữ liệu từ Backend (Spring Boot)
   const [userInfo, setUserInfo] = useState({
@@ -11,7 +11,7 @@ const MyInfoPage = () => {
   });
 
   return (
-    <div className="min-h-screen bg-slate-50 p-4 md:p-10 flex justify-center">
+    <div className="min-h-screen bg-slate-50 p-4 md:p-40 flex justify-center">
       <div className="max-w-5xl w-full grid grid-cols-1 md:grid-cols-3 gap-8">
         
         <div className="md:col-span-1 space-y-6">
@@ -35,8 +35,9 @@ const MyInfoPage = () => {
               <button className="w-full py-3 px-4 bg-orange-50 text-orange-600 rounded-xl font-semibold text-left transition-all hover:bg-orange-100">
                 Thông tin cá nhân
               </button>
+              
               <button className="w-full py-3 px-4 text-slate-600 rounded-xl font-medium text-left transition-all hover:bg-slate-100">
-                Tour yêu thích
+                <Link to="/myfavoriteTour">Tour yêu thích</Link>
               </button>
               <button className="w-full py-3 px-4 text-slate-600 rounded-xl font-medium text-left transition-all hover:bg-slate-100">
                 Đổi mật khẩu

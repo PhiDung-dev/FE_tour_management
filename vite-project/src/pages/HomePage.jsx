@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 function HomePage(){
     return(
         <>
@@ -41,7 +43,7 @@ function HomePage(){
         </section>
 
         </div>
-        
+            <button><Link to="/login">Đăng nhập</Link></button>
         </>
        
     )

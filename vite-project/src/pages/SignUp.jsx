@@ -1,16 +1,18 @@
+import { Link } from "react-router-dom";
+
 function SignUp() {
     return (
       <div>
-        <div >
+        <div className="p-40">
              <div className="bg-white p-8 md:p-10 rounded-[2rem] shadow-xl border border-slate-100 w-full max-w-[420px] justify-self-center md:justify-self-center ">
                 <h2 className="text-2xl font-bold text-slate-800 mb-8 text-center">Đăng ký để bắt đầu</h2>
           
                 <form className="flex flex-col gap-5">
                 <div className="flex flex-col gap-2">
-                <label className="text-sm font-semibold text-slate-700 ml-2">Email</label>
+                <label className="text-sm font-semibold text-slate-700 ml-2">Tên đăng nhập</label>
                 <input 
-                type="email" 
-                placeholder="Nhập email..."
+                type="text" 
+                placeholder="Nhập username..."
                 className="w-full px-5 py-3 rounded-2xl bg-slate-50 border border-slate-200 outline-none focus:ring-2 focus:ring-orange-400 focus:bg-white transition-all"
               />
             </div>
@@ -23,14 +25,7 @@ function SignUp() {
                 className="w-full px-5 py-3 rounded-2xl bg-slate-50 border border-slate-200 outline-none focus:ring-2 focus:ring-orange-400 focus:bg-white transition-all"
               />
             </div>
-            <div className="flex flex-col gap-2">
-              <label className="text-sm font-semibold text-slate-700 ml-2">Email</label>
-              <input 
-                type="email" 
-                placeholder="Nhập email...@..."
-                className="w-full px-5 py-3 rounded-2xl bg-slate-50 border border-slate-200 outline-none focus:ring-2 focus:ring-orange-400 focus:bg-white transition-all"
-              />
-            </div>
+           
             <div className="flex flex-col gap-2">
               <label className="text-sm font-semibold text-slate-700 ml-2">Nhập lại mật khẩu</label>
               <input 
@@ -52,9 +47,9 @@ function SignUp() {
 
             <p className="text-center text-sm text-slate-500 mt-4">
               Bạn đã có tài khoản?{' '}
-              {/* <Link to="/DangKy" className="text-orange-600 font-bold hover:underline">*/}
-               {/* Đăng ký ngay */}
-             {/*</p>} </Link>*/}
+              <Link to="/login" className="text-orange-600 font-bold hover:underline">
+               Đăng nhập ngay
+             </Link>
             </p>
             </form>
             </div>

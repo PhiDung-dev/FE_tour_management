@@ -49,10 +49,10 @@ function Login() {
           
           <form className="flex flex-col gap-5">
             <div className="flex flex-col gap-2">
-              <label className="text-sm font-semibold text-slate-700 ml-2">Email</label>
+              <label className="text-sm font-semibold text-slate-700 ml-2">Tên đăng nhập</label>
               <input 
-                type="email" 
-                placeholder="Nhập email..."
+                type="text" 
+                placeholder="Nhập username..."
                 className="w-full px-5 py-3 rounded-2xl bg-slate-50 border border-slate-200 outline-none focus:ring-2 focus:ring-orange-400 focus:bg-white transition-all"
               />
             </div>
@@ -80,9 +80,9 @@ function Login() {
 
             <p className="text-center text-sm text-slate-500 mt-4">
               Bạn chưa có tài khoản?{' '}
-              {/* <Link to="/DangKy" className="text-orange-600 font-bold hover:underline">*/}
-               {/* Đăng ký ngay */}
-             {/*</p>} </Link>*/}
+              <Link to="/signup" className="text-orange-600 font-bold hover:underline">
+               Đăng ký ngay
+              </Link>
             </p>
           </form>
         </div>
