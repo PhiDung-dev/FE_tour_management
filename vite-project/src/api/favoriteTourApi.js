@@ -1,11 +1,11 @@
-// src/api/userApi.js
+// src/api/favoriteTourApi.js
 
 import axiosClient from "./axiosClient";
 
-const BASE_URL = "http://localhost:8080/users";
+const BASE_URL = "http://localhost:8080/favoriteTours";
 
 // CREATE
-export const createUser = async (data) => {
+export const createFavoriteTour = async (data) => {
 
     const response = await axiosClient.post(
         BASE_URL,
@@ -16,7 +16,7 @@ export const createUser = async (data) => {
 }
 
 // READ ALL
-export const readUsers = async () => {
+export const readFavoriteTours = async () => {
 
     const response = await axiosClient.get(
         BASE_URL
@@ -26,7 +26,7 @@ export const readUsers = async () => {
 }
 
 // READ ONE
-export const readUser = async (id) => {
+export const readFavoriteTour = async (id) => {
 
     const response = await axiosClient.get(
         `${BASE_URL}/${id}`
@@ -35,19 +35,8 @@ export const readUser = async (id) => {
     return response.data;
 }
 
-// UPDATE
-export const updateUser = async (id, data) => {
-
-    const response = await axiosClient.put(
-        `${BASE_URL}/${id}`,
-        data
-    );
-
-    return response.data;
-}
-
 // DELETE
-export const deleteUser = async (id) => {
+export const deleteFavoriteTour = async (id) => {
 
     const response = await axiosClient.delete(
         `${BASE_URL}/${id}`

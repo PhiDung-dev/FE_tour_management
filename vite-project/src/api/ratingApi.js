@@ -1,11 +1,11 @@
-// src/api/userApi.js
+// src/api/ratingApi.js
 
 import axiosClient from "./axiosClient";
 
-const BASE_URL = "http://localhost:8080/users";
+const BASE_URL = "http://localhost:8080/ratings";
 
 // CREATE
-export const createUser = async (data) => {
+export const createRating = async (data) => {
 
     const response = await axiosClient.post(
         BASE_URL,
@@ -16,7 +16,7 @@ export const createUser = async (data) => {
 }
 
 // READ ALL
-export const readUsers = async () => {
+export const readRatings = async () => {
 
     const response = await axiosClient.get(
         BASE_URL
@@ -26,7 +26,7 @@ export const readUsers = async () => {
 }
 
 // READ ONE
-export const readUser = async (id) => {
+export const readRating = async (id) => {
 
     const response = await axiosClient.get(
         `${BASE_URL}/${id}`
@@ -36,7 +36,7 @@ export const readUser = async (id) => {
 }
 
 // UPDATE
-export const updateUser = async (id, data) => {
+export const updateRating = async (id, data) => {
 
     const response = await axiosClient.put(
         `${BASE_URL}/${id}`,
@@ -47,7 +47,7 @@ export const updateUser = async (id, data) => {
 }
 
 // DELETE
-export const deleteUser = async (id) => {
+export const deleteRating = async (id) => {
 
     const response = await axiosClient.delete(
         `${BASE_URL}/${id}`

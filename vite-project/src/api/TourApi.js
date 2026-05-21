@@ -1,51 +1,57 @@
+// src/api/tourApi.js
+
+import axiosClient from "./axiosClient";
+
 const BASE_URL = "http://localhost:8080/tours";
-async function createTour(data) {
-    try {
-        const response = await fetch(`${BASE_URL}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        });
-        return await response.json();
-    } catch (error) {
-        console.error("Lỗi khi tạo tour:", error);
-    }
+
+// CREATE
+export const createTour = async (data) => {
+
+    const response = await axiosClient.post(
+        BASE_URL,
+        data
+    );
+
+    return response.data;
 }
 
-async function deleteTour(id) {
-    try {
-        const response = await fetch(`${BASE_URL}/${id}`, {
-            method: 'DELETE'
-        });
-        return await response.json();
-    } catch (error) {
-        console.error("Lỗi khi xóa tour:", error);
-    }
+// READ ALL
+export const readTours = async () => {
+
+    const response = await axiosClient.get(
+        BASE_URL
+    );
+
+    return response.data;
 }
 
-async function updateTour(id, data) {
-    try {
-        const response = await fetch(`${BASE_URL}/${id}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        });
-        return await response.json();
-    } catch (error) {
-        console.error("Lỗi khi cập nhật tour:", error);
-    }
+// READ ONE
+export const readTour = async (id) => {
+
+    const response = await axiosClient.get(
+        `${BASE_URL}/${id}`
+    );
+
+    return response.data;
 }
 
-async function fetchTours() {
-    try {
-        const response = await fetch(`${BASE_URL}`);
-        return await response.json();
-    } catch (error) {
-        console.error("Lỗi khi lấy danh sách tour:", error);
-    }
+// UPDATE
+export const updateTour = async (id, data) => {
+
+    const response = await axiosClient.put(
+        `${BASE_URL}/${id}`,
+        data
+    );
+
+    return response.data;
 }
-export {createTour,deleteTour,updateTour,fetchTours};
+
+// DELETE
+export const deleteTour = async (id) => {
+
+    const response = await axiosClient.delete(
+        `${BASE_URL}/${id}`
+    );
+
+    return response.data;
+}

@@ -1,11 +1,11 @@
-// src/api/userApi.js
+// src/api/paymentApi.js
 
 import axiosClient from "./axiosClient";
 
-const BASE_URL = "http://localhost:8080/users";
+const BASE_URL = "http://localhost:8080/payments";
 
 // CREATE
-export const createUser = async (data) => {
+export const createPayment = async (data) => {
 
     const response = await axiosClient.post(
         BASE_URL,
@@ -16,7 +16,7 @@ export const createUser = async (data) => {
 }
 
 // READ ALL
-export const readUsers = async () => {
+export const readPayments = async () => {
 
     const response = await axiosClient.get(
         BASE_URL
@@ -26,7 +26,7 @@ export const readUsers = async () => {
 }
 
 // READ ONE
-export const readUser = async (id) => {
+export const readPayment = async (id) => {
 
     const response = await axiosClient.get(
         `${BASE_URL}/${id}`
@@ -36,7 +36,7 @@ export const readUser = async (id) => {
 }
 
 // UPDATE
-export const updateUser = async (id, data) => {
+export const updatePayment = async (id, data) => {
 
     const response = await axiosClient.put(
         `${BASE_URL}/${id}`,
@@ -47,7 +47,7 @@ export const updateUser = async (id, data) => {
 }
 
 // DELETE
-export const deleteUser = async (id) => {
+export const deletePayment = async (id) => {
 
     const response = await axiosClient.delete(
         `${BASE_URL}/${id}`

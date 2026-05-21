@@ -1,108 +1,173 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-const MyInfoPage = () => {
-  // Giả lập dữ liệu từ Backend (Spring Boot)
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import {
+  Heart,
+  Lock,
+  Mail,
+  MapPin,
+  Phone,
+  Save,
+  ShieldCheck,
+  User,
+} from "lucide-react";
+
+export default function MyInforPage() {
   const [userInfo, setUserInfo] = useState({
     fullName: "Tuan Anh",
     email: "tuananh@example.com",
     phone: "0123456789",
     address: "Đà Nẵng, Việt Nam",
-    avatar: "https://via.placeholder.com/150" 
   });
 
+  const handleChange = (field, value) => {
+    setUserInfo((prev) => ({ ...prev, [field]: value }));
+  };
+
   return (
-    <div className="min-h-screen bg-slate-50 p-4 md:p-40 flex justify-center">
-      <div className="max-w-5xl w-full grid grid-cols-1 md:grid-cols-3 gap-8">
-        
-        <div className="md:col-span-1 space-y-6">
-          <div className="bg-white p-8 rounded-[2.5rem] shadow-xl flex flex-col items-center border border-slate-100">
-            <div className="relative group">
-              <img 
-                src={userInfo.avatar} 
-                alt="Avatar" 
-                className="w-32 h-32 rounded-full object-cover border-4 border-orange-100 shadow-md"
-              />
-              <button className="absolute bottom-0 right-0 bg-orange-500 p-2 rounded-full text-white shadow-lg hover:scale-110 transition-all">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                </svg>
-              </button>
+    <main className="min-h-screen bg-slate-50 px-4 pb-10 pt-24 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-6xl">
+        <section className="mb-6 rounded-lg border border-blue-100 bg-white p-5 shadow-sm sm:p-7">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="mb-2 text-sm font-semibold uppercase tracking-wide text-blue-500">
+                Tài khoản
+              </p>
+              <h1 className="text-3xl font-bold text-slate-900">
+                Thông tin cá nhân
+              </h1>
+              <p className="mt-2 text-slate-500">
+                Quản lý họ tên, email, số điện thoại và địa chỉ của bạn.
+              </p>
             </div>
-            <h2 className="mt-4 text-xl font-bold text-slate-800">{userInfo.fullName}</h2>
-            <p className="text-slate-500 text-sm italic">Thành viên thân thiết</p>
-            
-            <div className="w-full mt-8 space-y-3">
-              <button className="w-full py-3 px-4 bg-orange-50 text-orange-600 rounded-xl font-semibold text-left transition-all hover:bg-orange-100">
+          </div>
+        </section>
+
+        <div className="grid gap-6 lg:grid-cols-[300px_1fr]">
+          <aside className="rounded-lg border border-blue-100 bg-white p-4 shadow-sm lg:sticky lg:top-28">
+            <div className="mb-5 rounded-lg bg-blue-50 p-4">
+              <div className="flex h-12 w-12 items-center justify-center rounded-md bg-blue-500 text-white">
+                <User size={24} />
+              </div>
+              <h2 className="mt-3 text-xl font-bold text-slate-900">
+                {userInfo.fullName}
+              </h2>
+              <p className="mt-1 text-sm text-slate-500">{userInfo.email}</p>
+            </div>
+
+            <div className="space-y-2">
+              <button className="flex w-full items-center gap-3 rounded-md bg-orange-50 px-4 py-3 font-semibold text-orange-600">
+                <User size={18} />
                 Thông tin cá nhân
               </button>
-              
-              <button className="w-full py-3 px-4 text-slate-600 rounded-xl font-medium text-left transition-all hover:bg-slate-100">
-                <Link to="/myfavoriteTour">Tour yêu thích</Link>
-              </button>
-              <button className="w-full py-3 px-4 text-slate-600 rounded-xl font-medium text-left transition-all hover:bg-slate-100">
+
+              <Link
+                to="/myfavoriteTour"
+                className="flex w-full items-center gap-3 rounded-md px-4 py-3 font-semibold text-slate-600 transition hover:bg-blue-50 hover:text-blue-600"
+              >
+                <Heart size={18} />
+                Tour yêu thích
+              </Link>
+
+              <button className="flex w-full items-center gap-3 rounded-md px-4 py-3 font-semibold text-slate-600 transition hover:bg-blue-50 hover:text-blue-600">
+                <Lock size={18} />
                 Đổi mật khẩu
               </button>
             </div>
-          </div>
-        </div>
+          </aside>
 
-        <div className="md:col-span-2">
-          <div className="bg-white p-8 md:p-10 rounded-[2.5rem] shadow-xl border border-slate-100">
-            <h3 className="text-2xl font-bold text-slate-800 mb-8 border-b pb-4">Chi tiết tài khoản</h3>
-            
-            <form className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="flex flex-col gap-2">
-                <label className="text-sm font-semibold text-slate-700 ml-1">Họ và tên</label>
-                <input 
-                  type="text" 
-                  value={userInfo.fullName}
-                  className="px-5 py-3 rounded-2xl bg-slate-50 border border-slate-200 outline-none focus:ring-2 focus:ring-orange-400 transition-all"
-                />
-              </div>
+          <section className="rounded-lg border border-blue-100 bg-white p-5 shadow-sm sm:p-7">
+            <div className="mb-6 border-b border-slate-100 pb-5">
+              <h2 className="text-2xl font-bold text-slate-900">
+                Chi tiết tài khoản
+              </h2>
+              <p className="mt-1 text-sm text-slate-500">
+                Cập nhật thông tin để VietTravel hỗ trợ bạn tốt hơn.
+              </p>
+            </div>
 
-              <div className="flex flex-col gap-2">
-                <label className="text-sm font-semibold text-slate-700 ml-1">Email</label>
-                <input 
-                  type="email" 
-                  value={userInfo.email}
-                  disabled
-                  className="px-5 py-3 rounded-2xl bg-slate-100 border border-slate-200 text-slate-500 cursor-not-allowed"
-                />
-              </div>
+            <form className="grid gap-5 md:grid-cols-2">
+              <InputField
+                icon={User}
+                label="Họ và tên"
+                value={userInfo.fullName}
+                onChange={(value) => handleChange("fullName", value)}
+              />
 
-              <div className="flex flex-col gap-2">
-                <label className="text-sm font-semibold text-slate-700 ml-1">Số điện thoại</label>
-                <input 
-                  type="text" 
-                  value={userInfo.phone}
-                  className="px-5 py-3 rounded-2xl bg-slate-50 border border-slate-200 outline-none focus:ring-2 focus:ring-orange-400 transition-all"
-                />
-              </div>
+              <InputField
+                icon={Mail}
+                label="Email"
+                type="email"
+                value={userInfo.email}
+                disabled
+              />
 
-              <div className="flex flex-col gap-2">
-                <label className="text-sm font-semibold text-slate-700 ml-1">Địa chỉ</label>
-                <input 
-                  type="text" 
-                  value={userInfo.address}
-                  className="px-5 py-3 rounded-2xl bg-slate-50 border border-slate-200 outline-none focus:ring-2 focus:ring-orange-400 transition-all"
-                />
-              </div>
+              <InputField
+                icon={Phone}
+                label="Số điện thoại"
+                value={userInfo.phone}
+                onChange={(value) => handleChange("phone", value)}
+              />
 
-              <div className="md:col-span-2 flex justify-end gap-4 mt-6">
-                <button type="button" className="px-6 py-3 rounded-xl font-semibold text-slate-600 hover:bg-slate-50 transition-all">
+              <InputField
+                icon={MapPin}
+                label="Địa chỉ"
+                value={userInfo.address}
+                onChange={(value) => handleChange("address", value)}
+              />
+
+              <div className="mt-3 flex flex-col-reverse gap-3 md:col-span-2 sm:flex-row sm:justify-end">
+                <button
+                  type="button"
+                  className="rounded-md px-5 py-3 font-semibold text-slate-600 transition hover:bg-slate-100"
+                >
                   Hủy bỏ
                 </button>
-                <button type="submit" className="px-10 py-3 rounded-xl bg-orange-500 text-white font-bold shadow-lg shadow-orange-200 hover:bg-orange-600 transition-all active:scale-95">
+
+                <button
+                  type="submit"
+                  className="inline-flex items-center justify-center gap-2 rounded-md bg-orange-500 px-6 py-3 font-bold text-white shadow-lg shadow-orange-200 transition hover:bg-orange-600 active:scale-[0.98]"
+                >
+                  <Save size={18} />
                   Lưu thay đổi
                 </button>
               </div>
             </form>
-          </div>
+          </section>
         </div>
-
       </div>
-    </div>
+    </main>
   );
-};
+}
 
-export default MyInfoPage;
+const InputField = ({
+  icon: Icon,
+  label,
+  value,
+  onChange,
+  type = "text",
+  disabled = false,
+}) => (
+  <div>
+    <label className="mb-2 block text-sm font-semibold text-slate-700">
+      {label}
+    </label>
+
+    <div className="relative">
+      <Icon
+        size={19}
+        className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+      />
+      <input
+        type={type}
+        value={value}
+        disabled={disabled}
+        onChange={(e) => onChange?.(e.target.value)}
+        className={`h-12 w-full rounded-md border pl-12 pr-4 outline-none transition ${
+          disabled
+            ? "cursor-not-allowed border-slate-200 bg-slate-100 text-slate-500"
+            : "border-slate-200 bg-slate-50 text-slate-800 focus:border-orange-400 focus:bg-white focus:ring-2 focus:ring-orange-100"
+        }`}
+      />
+    </div>
+  </div>
+);
