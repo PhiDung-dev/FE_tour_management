@@ -7,22 +7,24 @@ import HomePage from '../pages/shared/HomePage'
 import ToursPage from '../pages/shared/ToursPage'
 import LogInPage from '../pages/auth/LoginPage'
 import SignUpPage from '../pages/auth/SignUpPage'
+import TourDetailPage from '../pages/shared/TourDetailPage'
+import MainLayout from '../layouts/MainLayout'
 
 /* USER */
-import MyInforPage from '../pages/user/MyInforPage'
+import MyInforPage from '../pages/protected/MyInforPage'
 import UserLayout from '../layouts/UserLayout'
+import FavoriteTourPage from '../components/protected/myInfo/FavoriteTour'
 
 /* ADMIN */
 import DashboardPage from '../pages/admin/DashboardPage'
 import AdminLayout from '../layouts/AdminLayout'
 
 /* STAFF */
-import StaffBookingPage from '../pages/staff/StaffBookingPage'
+import BookingManagementPage from '../pages/staff/BookingManagementPage'
 import StaffLayout from '../layouts/StaffLayout'
-import TourDetailPage from '../pages/shared/TourDetailPage'
-
-import MainLayout from '../layouts/MainLayout'
-import FavoriteTourPage from '../pages/user/FavoriteTourPage'
+import UserManagementPage from '../pages/staff/UserManagementPage'
+import ChangePasswordPage from '../components/protected/myInfo/ChangePassword'
+import BookingPage from '../pages/user/BookingPage'
 
 function AppRoutes() {
 
@@ -36,6 +38,8 @@ function AppRoutes() {
                 <Route path="/login" element={<LogInPage />}/>
                 <Route path='/signup' element={<SignUpPage />} />
                 <Route path='/tourDetail' element={<TourDetailPage />}/>
+                <Route path='/favoriteTour' element={<FavoriteTourPage />}/>
+                <Route path='/changePassword' element={<ChangePasswordPage />} />
             </Route>
 
             {/* USER */}
@@ -44,13 +48,18 @@ function AppRoutes() {
                 <Route element={<UserLayout />}>
 
                     <Route
-                        path="/myInfo"
+                        path="/myInfor"
                         element={<MyInforPage />}
                     />
 
                     <Route 
                         path='/favoriteTour'
                         element={<FavoriteTourPage />}
+                    />
+
+                    <Route 
+                        path='/booking' 
+                        element={<BookingPage />}
                     />
 
                 </Route>
@@ -68,7 +77,7 @@ function AppRoutes() {
                     />
 
                     <Route 
-                        path='/myInfor'
+                        path='/admin/myInfor'
                         element={<MyInforPage />}
                     />
 
@@ -83,12 +92,17 @@ function AppRoutes() {
 
                     <Route
                         path="/staff/bookings"
-                        element={<StaffBookingPage />}
+                        element={<BookingManagementPage />}
                     />
 
                     <Route 
-                        path='/myInfor'
+                        path='/staff/myInfor'
                         element={<MyInforPage />}
+                    />
+                    
+                    <Route 
+                        path='/staff/userManagement'
+                        element={<UserManagementPage />}
                     />
 
                 </Route>

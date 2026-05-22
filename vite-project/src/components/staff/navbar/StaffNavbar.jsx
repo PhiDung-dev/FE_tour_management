@@ -14,8 +14,8 @@ export default function StaffNavbar() {
     { label: "Trang chủ", to: "/" },
     { label: "Danh sách tour", to: "/tours" },
     { label: "Quản đặt lý tour", to: "/staff/bookings" },
-    { label: "Quản lý user", to: "/tours" },
-    { label: "My info", to: "/myInfor" },
+    { label: "Quản lý user", to: "/staff/userManagement" },
+    { label: "My info", to: "/staff/myInfor" },
   ];
 
   return (

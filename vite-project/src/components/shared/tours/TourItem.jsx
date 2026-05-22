@@ -1,8 +1,5 @@
 import { useState } from "react";
-import {
-  faLocationDot,
-  faArrowRight,
-} from "@fortawesome/free-solid-svg-icons";
+import { faLocationDot, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Heart } from "lucide-react";
 import { Link } from "react-router-dom";

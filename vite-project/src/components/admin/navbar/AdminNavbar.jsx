@@ -1,11 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faPaperPlane,
-  faBars,
-  faXmark,
-} from "@fortawesome/free-solid-svg-icons";
+import { faPaperPlane, faBars, faXmark} from "@fortawesome/free-solid-svg-icons";
 
 export default function AdminNavbar() {
   const [open, setOpen] = useState(false);
@@ -14,7 +10,7 @@ export default function AdminNavbar() {
     { label: "Trang chủ", to: "/" },
     { label: "Danh sách tour", to: "/tours" },
     { label: "Admin Dashboard", to: "/admin/dashboard" },
-    { label: "My info", to: "/myInfor" },
+    { label: "My info", to: "/admin/myInfor" },
   ];
 
   return (

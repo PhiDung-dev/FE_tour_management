@@ -1,19 +1,9 @@
-import {
-  faBolt,
-  faCircleInfo,
-  faLocationDot,
-  faShield,
-} from "@fortawesome/free-solid-svg-icons";
+import { faBolt, faCircleInfo, faLocationDot, faShield } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CalendarDays, CheckCircle2, MapPinned } from "lucide-react";
+import { Link } from "react-router-dom";
 
-export default function TourDetailPage({
-  title,
-  location,
-  images,
-  description,
-  price,
-}) {
+export default function TourDetailPage({ title, location, images, description, price }) {
   const tourTitle = title || "Khám phá vẻ đẹp Việt Nam";
   const tourLocation = location || "Việt Nam";
   const tourImage =
@@ -112,10 +102,12 @@ export default function TourDetailPage({
               </div>
             </div>
 
-            <button className="flex h-12 w-full items-center justify-center gap-2 rounded-md bg-orange-500 font-bold text-white shadow-lg shadow-orange-200 transition hover:bg-orange-600 active:scale-[0.98]">
-              <FontAwesomeIcon icon={faBolt} />
-              Bắt đầu đặt chỗ
-            </button>
+            <Link to={"/booking"} >
+              <button className="flex h-12 w-full items-center justify-center gap-2 rounded-md bg-orange-500 font-bold text-white shadow-lg shadow-orange-200 transition hover:bg-orange-600 active:scale-[0.98]">
+                <FontAwesomeIcon icon={faBolt} />
+                Bắt đầu đặt chỗ
+              </button>
+            </Link>
 
             <p className="mt-4 flex items-center justify-center gap-2 text-center text-xs font-medium text-slate-400">
               <FontAwesomeIcon

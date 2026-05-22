@@ -1,14 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import {
-  User,
-  Lock,
-  Eye,
-  EyeOff,
-  UserPlus,
-  ArrowRight,
-  MapPinned,
-} from "lucide-react";
+import { User, Lock, Eye, EyeOff, UserPlus, ArrowRight, MapPinned } from "lucide-react";
 
 export default function SignUpPage() {
   const [showPassword, setShowPassword] = useState(false);

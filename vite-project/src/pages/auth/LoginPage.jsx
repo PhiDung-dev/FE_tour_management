@@ -53,7 +53,7 @@ export default function LogInPage() {
       } else if (role === "STAFF") {
         navigate("/staff/bookings");
       } else {
-        navigate("/");
+        navigate("/myInfor");
       }
     } catch (error) {
       console.log(error);
