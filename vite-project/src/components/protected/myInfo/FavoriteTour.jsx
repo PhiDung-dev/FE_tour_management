@@ -91,7 +91,7 @@ export default function FavoriteTour() {
                       title="Xóa khỏi yêu thích"
                     >
                       <Trash2 size={18} />
-                    </button>
+                    </button> 
                   </div>
                 </div>
               </div>

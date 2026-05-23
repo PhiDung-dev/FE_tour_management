@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { createTour, deleteTour, readTours, updateTour } from "../../../api/TourApi";
 import { createSchedule } from "../../../api/ScheduleApi";
-import InputManagement from "./InputManagement";
+import InputManagement, { InputDropManagement, InputImage } from "./InputManagement";
 import { CalendarPlus, Pencil, Plus, Trash2, X } from "lucide-react";
 
 const emptyTour = {
@@ -17,6 +17,21 @@ const emptySchedule = {
   endDate: "",
   slot: "",
 };
+
+ const locationOptions = [
+  "An Giang", "Bà Rịa - Vũng Tàu", "Bạc Liêu", "Bắc Giang", "Bắc Kạn", "Bắc Ninh", 
+  "Bến Tre", "Bình Dương", "Bình Định", "Bình Phước", "Bình Thuận", "Cà Mau", 
+  "Cần Thơ", "Cao Bằng", "Đà Nẵng", "Đắk Lắk", "Đắk Nông", "Điện Biên", 
+  "Đồng Nai", "Đồng Tháp", "Gia Lai", "Hà Giang", "Hà Nam", "Hà Nội", 
+  "Hà Tĩnh", "Hải Dương", "Hải Phòng", "Hậu Giang", "Hòa Bình", "Hưng Yên", 
+  "Khánh Hòa", "Kiên Giang", "Kon Tum", "Lai Châu", "Lạng Sơn", "Lào Cai", 
+  "Lâm Đồng", "Long An", "Nam Định", "Nghệ An", "Ninh Bình", "Ninh Thuận", 
+  "Phú Thọ", "Phú Yên", "Quảng Bình", "Quảng Nam", "Quảng Ngãi", "Quảng Ninh", 
+  "Quảng Trị", "Sóc Trăng", "Sơn La", "Tây Ninh", "Thái Bình", "Thái Nguyên", 
+  "Thanh Hóa", "Thừa Thiên Huế", "Tiền Giang", "TP. Hồ Chí Minh", "Trà Vinh", 
+  "Tuyên Quang", "Vĩnh Long", "Vĩnh Phúc", "Yên Bái"
+];
+  
 
 function getResult(data) {
   return data?.result || data;
@@ -126,7 +141,7 @@ export default function TourManagement() {
       const payload = {
         ...newTour,
         price: Number(newTour.price),
-        images: Array.isArray(newTour.images) ? newTour.images : [newTour.images],
+        images: newTour.images.filter((image) => image.trim() !== ""),
       };
 
       const result = editingTourId
@@ -227,15 +242,10 @@ export default function TourManagement() {
                   value={newTour.price}
                   onChange={(value) => setNewTour({ ...newTour, price: value })}
                 />
-                <InputManagement
-                  label="Địa điểm"
-                  value={newTour.location}
-                  onChange={(value) => setNewTour({ ...newTour, location: value })}
-                />
-                <InputManagement
-                  label="Hình ảnh"
-                  value={newTour.images[0] || ""}
-                  onChange={(value) => setNewTour({ ...newTour, images: [value] })}
+                <InputDropManagement label="Địa điểm" value={newTour.location} onChange={(value) => setNewTour({ ...newTour, location: value })} options={locationOptions} />
+                <InputImage
+                  value={newTour.images}
+                  onChange={(images) => setNewTour({ ...newTour, images })}
                 />
 
                 <div>
