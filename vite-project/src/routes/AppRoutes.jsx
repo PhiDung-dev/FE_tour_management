@@ -37,7 +37,7 @@ function AppRoutes() {
                 <Route path="/tours" element={<ToursPage />} />
                 <Route path="/login" element={<LogInPage />}/>
                 <Route path='/signup' element={<SignUpPage />} />
-                <Route path='/tourDetail' element={<TourDetailPage />}/>
+                <Route path='/tourDetail/:id' element={<TourDetailPage />}/>
                 <Route path='/favoriteTour' element={<FavoriteTourPage />}/>
                 <Route path='/changePassword' element={<ChangePasswordPage />} />
             </Route>

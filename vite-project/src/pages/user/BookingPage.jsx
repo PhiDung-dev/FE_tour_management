@@ -1,49 +1,134 @@
-import React, { useMemo, useState } from "react";
-import { Link } from "react-router-dom";
-import { ArrowLeft, CalendarDays, CheckCircle2, ClipboardCheck, MapPin, Minus, Plus, ShieldCheck, TicketCheck, UserRound } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
+import {
+  ArrowLeft,
+  CalendarDays,
+  CheckCircle2,
+  ClipboardCheck,
+  MapPin,
+  Minus,
+  Plus,
+  ShieldCheck,
+  TicketCheck,
+  UserRound,
+} from "lucide-react";
+import { readTour } from "../../api/TourApi";
+import { readSchedules } from "../../api/ScheduleApi";
 
 export default function BookingPage() {
+  const [searchParams] = useSearchParams();
+  const tourId = searchParams.get("tourId");
+
   const [guestCount, setGuestCount] = useState(1);
-  const [startDate, setStartDate] = useState("");
+  const [scheduleId, setScheduleId] = useState("");
   const [note, setNote] = useState("");
-
-  const tour = {
-    id: "TOUR001",
-    title: "Khám phá vẻ đẹp Việt Nam",
-    location: "Đà Nẵng, Hội An",
-    image:
-      "https://images.unsplash.com/photo-1557409518-691ebcd96038?auto=format&fit=crop&w=1000&q=80",
-    price: 2900000,
-  };
-
-  const totalPrice = useMemo(() => tour.price * guestCount, [guestCount]);
+  const [tour, setTour] = useState(null);
+  const [schedules, setSchedules] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const formatPrice = (price) =>
-    new Intl.NumberFormat("vi-VN").format(price) + "đ";
+    new Intl.NumberFormat("vi-VN").format(Number(price || 0)) + "đ";
+
+  const formatDate = (date) => {
+    if (!date) return "";
+    return new Date(date).toLocaleDateString("vi-VN");
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!tourId) return;
+
+      try {
+        setLoading(true);
+
+        const [tourData, scheduleData] = await Promise.all([
+          readTour(tourId),
+          readSchedules(),
+        ]);
+
+        const tourResult = tourData?.result || tourData;
+        const scheduleResult = scheduleData?.result || scheduleData || [];
+
+        setTour(tourResult);
+
+        const tourSchedules = scheduleResult.filter(
+          (schedule) =>
+            String(schedule.tourId || schedule.tour?.id) === String(tourId)
+        );
+
+        setSchedules(tourSchedules);
+      } catch (error) {
+        console.error("Lỗi khi tải dữ liệu booking:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [tourId]);
+
+  const selectedSchedule = useMemo(() => {
+    return schedules.find((schedule) => String(schedule.id) === String(scheduleId));
+  }, [schedules, scheduleId]);
+
+  const totalPrice = useMemo(() => {
+    return Number(tour?.price || 0) * guestCount;
+  }, [tour?.price, guestCount]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    if (!tour) {
+      alert("Không tìm thấy tour.");
+      return;
+    }
+
+    if (!scheduleId) {
+      alert("Vui lòng chọn lịch trình.");
+      return;
+    }
+
     const bookingData = {
       tourId: tour.id,
-      guestCount,
-      startDate,
-      note,
+      scheduleId,
+      quantity: guestCount,
+      description: note,
       totalPrice,
     };
 
     console.log("Booking data:", bookingData);
     alert("Đặt tour thành công! Đơn của bạn đang chờ nhân viên phê duyệt.");
 
-    // Sau này gọi API ở đây:
     // createBooking(bookingData)
   };
+
+  if (loading) {
+    return (
+      <main className="min-h-screen bg-slate-50 px-4 pt-24">
+        <p className="text-center text-slate-500">Đang tải thông tin đặt tour...</p>
+      </main>
+    );
+  }
+
+  if (!tour) {
+    return (
+      <main className="min-h-screen bg-slate-50 px-4 pt-24">
+        <p className="text-center font-semibold text-red-600">
+          Không tìm thấy thông tin tour.
+        </p>
+      </main>
+    );
+  }
+
+  const tourImage =
+    tour.images?.[0] ||
+    "https://images.unsplash.com/photo-1557409518-691ebcd96038?auto=format&fit=crop&w=1000&q=80";
 
   return (
     <main className="min-h-screen bg-slate-50 px-4 pb-10 pt-24 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-6xl">
         <Link
-          to="/tourDetail"
+          to={`/tourDetail/${tour.id}`}
           className="mb-5 inline-flex items-center gap-2 font-semibold text-slate-600 transition hover:text-blue-600"
         >
           <ArrowLeft size={18} />
@@ -84,21 +169,37 @@ export default function BookingPage() {
             <div className="space-y-5">
               <div>
                 <label className="mb-2 block text-sm font-semibold text-slate-700">
-                  Ngày khởi hành
+                  Lịch trình
                 </label>
+
                 <div className="relative">
                   <CalendarDays
                     size={19}
                     className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-500"
                   />
-                  <input
-                    type="date"
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
+
+                  <select
+                    value={scheduleId}
+                    onChange={(e) => setScheduleId(e.target.value)}
                     required
-                    className="h-12 w-full rounded-md border border-slate-200 bg-slate-50 pl-12 pr-4 text-slate-700 outline-none transition focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-100"
-                  />
+                    className="h-12 w-full cursor-pointer rounded-md border border-slate-200 bg-slate-50 pl-12 pr-4 text-slate-700 outline-none transition focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-100"
+                  >
+                    <option value="">Chọn ngày bắt đầu - kết thúc</option>
+                    {schedules.map((schedule) => (
+                      <option key={schedule.id} value={schedule.id}>
+                        {formatDate(schedule.startDate)} - {formatDate(schedule.endDate)}
+                        {schedule.slot ? ` | Còn ${schedule.slot} chỗ` : ""}
+                      </option>
+                    ))}
+                  </select>
                 </div>
+
+                {selectedSchedule && (
+                  <p className="mt-2 text-sm font-medium text-slate-500">
+                    Đã chọn: {formatDate(selectedSchedule.startDate)} -{" "}
+                    {formatDate(selectedSchedule.endDate)}
+                  </p>
+                )}
               </div>
 
               <div>
@@ -108,7 +209,9 @@ export default function BookingPage() {
                 <div className="flex h-12 w-full max-w-xs items-center justify-between rounded-md border border-slate-200 bg-slate-50 px-3">
                   <button
                     type="button"
-                    onClick={() => setGuestCount((prev) => Math.max(1, prev - 1))}
+                    onClick={() =>
+                      setGuestCount((prev) => Math.max(1, prev - 1))
+                    }
                     className="flex h-8 w-8 items-center justify-center rounded-md bg-white text-slate-600 shadow-sm hover:text-blue-600"
                   >
                     <Minus size={16} />
@@ -121,7 +224,13 @@ export default function BookingPage() {
 
                   <button
                     type="button"
-                    onClick={() => setGuestCount((prev) => prev + 1)}
+                    onClick={() =>
+                      setGuestCount((prev) =>
+                        selectedSchedule?.slot
+                          ? Math.min(Number(selectedSchedule.slot), prev + 1)
+                          : prev + 1
+                      )
+                    }
                     className="flex h-8 w-8 items-center justify-center rounded-md bg-white text-slate-600 shadow-sm hover:text-blue-600"
                   >
                     <Plus size={16} />
@@ -145,7 +254,7 @@ export default function BookingPage() {
 
           <aside className="rounded-lg border border-blue-100 bg-white p-5 shadow-xl lg:sticky lg:top-28">
             <img
-              src={tour.image}
+              src={tourImage}
               alt={tour.title}
               className="mb-4 h-48 w-full rounded-md object-cover"
             />
@@ -156,12 +265,20 @@ export default function BookingPage() {
 
             <p className="mt-2 flex items-center gap-2 text-sm font-semibold text-blue-500">
               <MapPin size={17} />
-              {tour.location}
+              {tour.location || "Chưa cập nhật"}
             </p>
 
             <div className="mt-5 space-y-3 border-y border-slate-100 py-5">
               <PriceRow label="Giá / khách" value={formatPrice(tour.price)} />
               <PriceRow label="Số khách" value={`${guestCount} khách`} />
+              {selectedSchedule && (
+                <PriceRow
+                  label="Lịch trình"
+                  value={`${formatDate(selectedSchedule.startDate)} - ${formatDate(
+                    selectedSchedule.endDate
+                  )}`}
+                />
+              )}
               <PriceRow
                 label="Tổng tiền"
                 value={formatPrice(totalPrice)}

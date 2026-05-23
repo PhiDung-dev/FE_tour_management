@@ -70,9 +70,6 @@ export default function FavoriteTour() {
                     </h2>
 
                     <div className="mt-2 flex flex-wrap gap-2 text-sm">
-                      <span className="rounded-md bg-blue-50 px-3 py-1 font-medium text-blue-600">
-                        {tour.duration}
-                      </span>
                       <span className="rounded-md bg-orange-50 px-3 py-1 font-bold text-orange-600">
                         {tour.price}
                       </span>
@@ -81,7 +78,7 @@ export default function FavoriteTour() {
 
                   <div className="flex gap-2 sm:flex-col sm:items-end">
                     <Link
-                      to="/tourDetail"
+                      to={`/tourDetail/${tour.id}`}
                       className="inline-flex flex-1 items-center justify-center gap-2 rounded-md bg-blue-500 px-4 py-2 font-semibold text-white transition hover:bg-blue-700 sm:flex-none"
                     >
                       Chi tiết

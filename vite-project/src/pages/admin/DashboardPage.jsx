@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { MapPinned, Users, UserCog } from "lucide-react";
 import TourManagement from "../../components/admin/dashboard/TourManagement";
 import UserManagement from "../../components/admin/dashboard/UserManagement";
-
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState("tours");
 
@@ -61,8 +60,8 @@ export default function DashboardPage() {
 
         <section className="rounded-lg border border-blue-100 bg-white p-4 shadow-sm sm:p-6">
           {activeTab === "tours" && <TourManagement />}
-          {activeTab === "users" && <UserManagement title="Khách hàng" role="User" />}
-          {activeTab === "staff" && <UserManagement title="Nhân viên" role="Staff" />}
+          {activeTab === "users" && <UserManagement title="Khách hàng" roleFilter="USER" />}
+          {activeTab === "staff" && <UserManagement title="Nhân viên" roleFilter="STAFF" />}
         </section>
       </div>
     </main>

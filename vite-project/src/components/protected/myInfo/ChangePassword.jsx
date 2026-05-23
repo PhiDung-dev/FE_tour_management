@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Lock, ShieldCheck, Eye, EyeOff, Save } from "lucide-react";
-import PasswordInput from "./PasswordInput";
+import InputPassword from "./InputPassword";
 
 export default function ChangePassword() {
 
@@ -79,7 +79,7 @@ export default function ChangePassword() {
       >
 
         {/* CURRENT PASSWORD */}
-        <PasswordInput
+        <InputPassword
           label="Mật khẩu hiện tại"
           value={formData.currentPassword}
           onChange={(value) =>
@@ -95,7 +95,7 @@ export default function ChangePassword() {
         />
 
         {/* NEW PASSWORD */}
-        <PasswordInput
+        <InputPassword
           label="Mật khẩu mới"
           value={formData.newPassword}
           onChange={(value) =>
@@ -111,7 +111,7 @@ export default function ChangePassword() {
         />
 
         {/* CONFIRM PASSWORD */}
-        <PasswordInput
+        <InputPassword
           label="Xác nhận mật khẩu mới"
           value={formData.confirmPassword}
           onChange={(value) =>

@@ -1,10 +1,61 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { User, Lock, Eye, EyeOff, UserPlus, ArrowRight, MapPinned } from "lucide-react";
+import { createAccount } from "../../api/accountApi";
 
 export default function SignUpPage() {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [formData, setFormData] = useState({
+    username: "",
+    password: "",
+    confirmPassword: "",
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormData((current) => ({ ...current, [name]: value }));
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setError("");
+
+    if (!formData.username.trim()) {
+      setError("Vui lòng nhập tên đăng nhập.");
+      return;
+    }
+
+    if (!formData.password) {
+      setError("Vui lòng nhập mật khẩu.");
+      return;
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      setError("Mật khẩu nhập lại không khớp.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      await createAccount({
+        username: formData.username.trim(),
+        password: formData.password
+      });
+
+      alert("Đăng ký tài khoản thành công!");
+      navigate("/login");
+    } catch (err) {
+      console.error("Lỗi khi đăng ký:", err);
+      setError(err.response?.data?.message || "Đăng ký thất bại. Vui lòng thử lại.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-sky-50 via-white to-blue-50 px-4 py-8 sm:px-6 lg:px-8">
@@ -53,7 +104,13 @@ export default function SignUpPage() {
                 </p>
               </div>
 
-              <form className="space-y-5">
+              <form className="space-y-5" onSubmit={handleSubmit}>
+                {error && (
+                  <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
+                    {error}
+                  </div>
+                )}
+
                 <div>
                   <label className="mb-2 block text-sm font-semibold text-slate-700">
                     Tên đăng nhập
@@ -65,7 +122,10 @@ export default function SignUpPage() {
                       className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
                     />
                     <input
+                      name="username"
                       type="text"
+                      value={formData.username}
+                      onChange={handleChange}
                       placeholder="Nhập username"
                       className="h-12 w-full rounded-md border border-slate-200 bg-slate-50 pl-12 pr-4 text-slate-800 outline-none transition focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-100"
                     />
@@ -83,7 +143,10 @@ export default function SignUpPage() {
                       className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
                     />
                     <input
+                      name="password"
                       type={showPassword ? "text" : "password"}
+                      value={formData.password}
+                      onChange={handleChange}
                       placeholder="Nhập mật khẩu"
                       className="h-12 w-full rounded-md border border-slate-200 bg-slate-50 pl-12 pr-12 text-slate-800 outline-none transition focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-100"
                     />
@@ -108,31 +171,29 @@ export default function SignUpPage() {
                       className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
                     />
                     <input
+                      name="confirmPassword"
                       type={showConfirmPassword ? "text" : "password"}
+                      value={formData.confirmPassword}
+                      onChange={handleChange}
                       placeholder="Nhập lại mật khẩu"
                       className="h-12 w-full rounded-md border border-slate-200 bg-slate-50 pl-12 pr-12 text-slate-800 outline-none transition focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-100"
                     />
                     <button
                       type="button"
-                      onClick={() =>
-                        setShowConfirmPassword(!showConfirmPassword)
-                      }
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                       className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700"
                     >
-                      {showConfirmPassword ? (
-                        <EyeOff size={20} />
-                      ) : (
-                        <Eye size={20} />
-                      )}
+                      {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                     </button>
                   </div>
                 </div>
 
                 <button
                   type="submit"
-                  className="flex h-12 w-full items-center justify-center gap-2 rounded-md bg-blue-500 font-bold text-white shadow-lg shadow-blue-200 transition hover:bg-blue-600 active:scale-[0.98]"
+                  disabled={loading}
+                  className="flex h-12 w-full items-center justify-center gap-2 rounded-md bg-blue-500 font-bold text-white shadow-lg shadow-blue-200 transition hover:bg-blue-600 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
                 >
-                  Đăng ký
+                  {loading ? "Đang đăng ký..." : "Đăng ký"}
                   <ArrowRight size={18} />
                 </button>
 

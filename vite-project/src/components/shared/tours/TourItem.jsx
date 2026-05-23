@@ -4,28 +4,36 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Heart } from "lucide-react";
 import { Link } from "react-router-dom";
 
+const fallbackImage =
+  "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=600&q=80";
+
+function formatPrice(price) {
+  if (price === null || price === undefined || price === "") return "Liên hệ";
+
+  return new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
+    maximumFractionDigits: 0,
+  }).format(Number(price));
+}
+
 export default function TourItem({
+  id,
   title,
   description,
   price,
   location,
   image,
+  images = [],
 }) {
   const [isFavorite, setIsFavorite] = useState(false);
-
-  const tourImage =
-    image ||
-    "https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=600&q=80";
+  const [imageSrc, setImageSrc] = useState(image || images?.[0] || fallbackImage);
 
   const handleToggleFavorite = (e) => {
     e.preventDefault();
     e.stopPropagation();
 
     setIsFavorite((prev) => !prev);
-
-    // Sau này gọi API ở đây:
-    // addFavoriteTour(tourId)
-    // removeFavoriteTour(tourId)
   };
 
   return (
@@ -33,8 +41,9 @@ export default function TourItem({
       <div className="relative aspect-[4/3] overflow-hidden">
         <img
           className="h-full w-full object-cover transition duration-500 group-hover:scale-110"
-          src={tourImage}
+          src={imageSrc}
           alt={title || "Tour image"}
+          onError={() => setImageSrc(fallbackImage)}
         />
 
         <div className="absolute left-3 top-3 rounded-md bg-white/90 px-3 py-1 text-sm font-semibold text-blue-600 shadow-sm backdrop-blur">
@@ -65,7 +74,7 @@ export default function TourItem({
             icon={faLocationDot}
             style={{ color: "rgb(116, 192, 252)" }}
           />
-          <span className="line-clamp-1">{location || "Địa điểm du lịch"}</span>
+          <span className="line-clamp-1">{location || "Chưa cập nhật"}</span>
         </div>
 
         <h2 className="mb-2 line-clamp-2 text-lg font-bold leading-snug text-slate-800 transition group-hover:text-blue-600">
@@ -73,8 +82,7 @@ export default function TourItem({
         </h2>
 
         <p className="mb-5 line-clamp-3 flex-1 text-sm leading-6 text-slate-500">
-          {description ||
-            "Mô tả ngắn về tour du lịch, lịch trình và trải nghiệm nổi bật."}
+          {description || "Tour hiện chưa có mô tả chi tiết."}
         </p>
 
         <div className="flex items-end justify-between gap-3 border-t border-blue-50 pt-4">
@@ -83,13 +91,13 @@ export default function TourItem({
               Giá từ
             </p>
             <strong className="text-lg font-bold text-blue-600">
-              {price || "Liên hệ"}
+              {formatPrice(price)}
             </strong>
           </div>
 
           <Link
             className="inline-flex items-center gap-2 rounded-md bg-blue-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 active:bg-blue-800"
-            to="/tourDetail"
+            to={`/tourDetail/${id}`}
           >
             Chi tiết
             <FontAwesomeIcon icon={faArrowRight} className="text-xs" />

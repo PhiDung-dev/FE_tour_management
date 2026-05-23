@@ -1,4 +1,6 @@
-export default function PasswordInput({ label, value, onChange, visible, onToggle }) {
+import { Eye, EyeOff, Lock } from "lucide-react";
+
+export default function InputPassword({ label, value, onChange, visible, onToggle }) {
 
   return (
 

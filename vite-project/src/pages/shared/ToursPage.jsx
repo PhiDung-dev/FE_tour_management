@@ -1,8 +1,47 @@
+import { useEffect, useMemo, useState } from "react";
 import { SlidersHorizontal } from "lucide-react";
 import TourFilter from "../../components/shared/tours/TourFilter";
 import TourItem from "../../components/shared/tours/TourItem";
+import { readTours } from "../../api/TourApi";
+
+function getToursArray(data) {
+  return data?.result || data || [];
+}
 
 export default function ToursPage() {
+  const [tours, setTours] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const fetchTours = async () => {
+    try {
+      setLoading(true);
+      setError("");
+      const data = await readTours();
+      setTours(getToursArray(data));
+    } catch (err) {
+      console.error("Lỗi khi lấy danh sách tour:", err);
+      setError("Không thể tải danh sách tour. Vui lòng thử lại sau.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchTours();
+  }, []);
+
+  const normalizedTours = useMemo(() => {
+    return tours.map((tour) => ({
+      id: tour.id,
+      title: tour.title || "",
+      description: tour.description || "",
+      price: tour.price,
+      location: tour.location || "Chưa cập nhật",
+      images: Array.isArray(tour.images) ? tour.images : [],
+    }));
+  }, [tours]);
+
   return (
     <main className="min-h-screen bg-slate-50 px-4 pb-14 pt-24 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
@@ -29,7 +68,9 @@ export default function ToursPage() {
                   Tất cả tour
                 </h2>
                 <p className="mt-1 text-sm text-slate-500">
-                  8 tour đang sẵn sàng cho bạn.
+                  {loading
+                    ? "Đang tải danh sách tour..."
+                    : `${normalizedTours.length} tour đang sẵn sàng cho bạn.`}
                 </p>
               </div>
 
@@ -39,16 +80,42 @@ export default function ToursPage() {
               </div>
             </div>
 
-            <div className="grid auto-rows-fr grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
-              <TourItem/>
-              <TourItem />
-              <TourItem />
-              <TourItem />
-              <TourItem />
-              <TourItem />
-              <TourItem />
-              <TourItem />
-            </div>
+            {error && (
+              <div className="mb-5 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
+                {error}
+              </div>
+            )}
+
+            {loading && (
+              <div className="rounded-lg border border-blue-100 bg-white p-8 text-center text-slate-500">
+                Đang tải dữ liệu...
+              </div>
+            )}
+
+            {!loading && normalizedTours.length === 0 && !error && (
+              <div className="rounded-lg border border-blue-100 bg-white p-8 text-center">
+                <p className="font-semibold text-slate-700">Chưa có tour nào</p>
+                <p className="mt-1 text-sm text-slate-500">
+                  Vui lòng quay lại sau.
+                </p>
+              </div>
+            )}
+
+            {!loading && normalizedTours.length > 0 && (
+              <div className="grid auto-rows-fr grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
+                {normalizedTours.map((tour) => (
+                  <TourItem
+                    key={tour.id}
+                    id={tour.id}
+                    title={tour.title}
+                    description={tour.description}
+                    price={tour.price}
+                    location={tour.location}
+                    images={tour.images}
+                  />
+                ))}
+              </div>
+            )}
           </section>
         </div>
       </div>

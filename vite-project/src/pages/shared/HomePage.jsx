@@ -1,8 +1,40 @@
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { CalendarDays, MapPin, Search, ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
 import TourItem from "../../components/shared/tours/TourItem";
+import { readTours } from "../../api/TourApi";
 
 function HomePage() {
+  const [tours, setTours] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchTours = async () => {
+      try {
+        setLoading(true);
+        const data = await readTours();
+        setTours(data?.result || data || []);
+      } catch (error) {
+        console.error("Lỗi khi lấy danh sách tour:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTours();
+  }, []);
+
+  const featuredTours = useMemo(() => {
+    return tours.slice(0, 4).map((tour) => ({
+      id: tour.id,
+      title: tour.title || "",
+      description: tour.description || "",
+      price: tour.price,
+      location: tour.location || "Chưa cập nhật",
+      images: Array.isArray(tour.images) ? tour.images : [],
+    }));
+  }, [tours]);
+
   return (
     <main className="min-h-screen bg-slate-50">
       <section className="relative min-h-[620px] overflow-hidden pt-20">
@@ -35,11 +67,11 @@ function HomePage() {
 
           <div className="mt-10 flex flex-col gap-3 sm:flex-row">
             <Link
-                to="/tours"
-                className="inline-flex h-12 items-center justify-center gap-2 rounded-md bg-blue-500 px-6 font-bold text-white shadow-lg shadow-blue-200 transition hover:bg-blue-600 active:scale-[0.98]"
+              to="/tours"
+              className="inline-flex h-12 items-center justify-center gap-2 rounded-md bg-blue-500 px-6 font-bold text-white shadow-lg shadow-blue-200 transition hover:bg-blue-600 active:scale-[0.98]"
             >
-                Khám phá tour ngay
-                <ArrowRight size={18} />
+              Khám phá tour ngay
+              <ArrowRight size={18} />
             </Link>
           </div>
         </div>
@@ -68,12 +100,32 @@ function HomePage() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          <TourItem />
-          <TourItem />
-          <TourItem />
-          <TourItem />
-        </div>
+        {loading ? (
+          <div className="rounded-lg border border-blue-100 bg-white p-8 text-center text-slate-500">
+            Đang tải tour...
+          </div>
+        ) : featuredTours.length > 0 ? (
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {featuredTours.map((tour) => (
+              <TourItem
+                key={tour.id}
+                id={tour.id}
+                title={tour.title}
+                description={tour.description}
+                price={tour.price}
+                location={tour.location}
+                images={tour.images}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="rounded-lg border border-blue-100 bg-white p-8 text-center">
+            <p className="font-semibold text-slate-700">Chưa có tour nào</p>
+            <p className="mt-1 text-sm text-slate-500">
+              Vui lòng quay lại sau.
+            </p>
+          </div>
+        )}
       </section>
     </main>
   );
