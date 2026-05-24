@@ -9,22 +9,24 @@ import LogInPage from '../pages/auth/LoginPage'
 import SignUpPage from '../pages/auth/SignUpPage'
 import TourDetailPage from '../pages/shared/TourDetailPage'
 import MainLayout from '../layouts/MainLayout'
+import StaffDashboardPage from '../pages/staff/StaffDashboardPage'
+import ForbiddenPage from '../pages/shared/FobiddenPage'
+
+import ChangePasswordPage from '../components/protected/myInfo/ChangePassword'
 
 /* USER */
 import MyInforPage from '../pages/protected/MyInforPage'
 import UserLayout from '../layouts/UserLayout'
 import FavoriteTourPage from '../components/protected/myInfo/FavoriteTour'
+import BookingPage from '../pages/user/BookingPage'
 
 /* ADMIN */
 import DashboardPage from '../pages/admin/DashboardPage'
 import AdminLayout from '../layouts/AdminLayout'
 
 /* STAFF */
-import BookingManagementPage from '../pages/staff/BookingManagementPage'
 import StaffLayout from '../layouts/StaffLayout'
-import UserManagementPage from '../pages/staff/UserManagementPage'
-import ChangePasswordPage from '../components/protected/myInfo/ChangePassword'
-import BookingPage from '../pages/user/BookingPage'
+
 
 function AppRoutes() {
 
@@ -40,6 +42,7 @@ function AppRoutes() {
                 <Route path='/tourDetail/:id' element={<TourDetailPage />}/>
                 <Route path='/favoriteTour' element={<FavoriteTourPage />}/>
                 <Route path='/changePassword' element={<ChangePasswordPage />} />
+                <Route path="/403" element={<ForbiddenPage />} />
             </Route>
 
             {/* USER */}
@@ -91,18 +94,12 @@ function AppRoutes() {
                 <Route element={<StaffLayout />}>
 
                     <Route
-                        path="/staff/bookings"
-                        element={<BookingManagementPage />}
+                        path='/staff/dashboard'
+                        element={<StaffDashboardPage />}
                     />
-
                     <Route 
                         path='/staff/myInfor'
                         element={<MyInforPage />}
-                    />
-                    
-                    <Route 
-                        path='/staff/userManagement'
-                        element={<UserManagementPage />}
                     />
 
                 </Route>

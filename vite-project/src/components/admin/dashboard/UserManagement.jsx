@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Eye, Search } from "lucide-react";
-import UserDetailModal from "../../staff/userManagement/UserDetailModel";
+import UserDetailModal from "../../staff/dashboard/UserDetailModel";
 import { readUsers } from "../../../api/userApi";
 import { readAccounts } from "../../../api/accountApi";
 

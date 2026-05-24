@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createTour, deleteTour, readTours, updateTour } from "../../../api/TourApi";
 import { createSchedule } from "../../../api/ScheduleApi";
 import InputManagement, { InputDropManagement, InputImage } from "./InputManagement";
-import { CalendarPlus, Pencil, Plus, Trash2, X } from "lucide-react";
+import { CalendarPlus, Pencil, Plus, Search, Trash2, X } from "lucide-react";
 
 const emptyTour = {
   title: "",
@@ -49,6 +49,7 @@ export default function TourManagement() {
   const [newTour, setNewTour] = useState(emptyTour);
   const [schedules, setSchedules] = useState([{ ...emptySchedule }]);
   const [saving, setSaving] = useState(false);
+  const [keyword, setKeyword] = useState("");
 
   const fetchToursData = async () => {
     try {
@@ -195,6 +196,25 @@ export default function TourManagement() {
       console.error("Lỗi khi xoá tour:", error);
     }
   };
+
+  const filteredTours = useMemo(() => {
+  const searchValue = keyword.trim().toLowerCase();
+
+  if (!searchValue) return tours;
+
+  return tours.filter((tour) => {
+    const searchText = [
+      tour.id,
+      tour.title,
+      tour.price,
+      tour.location,
+    ]
+      .join(" ")
+      .toLowerCase();
+
+    return searchText.includes(searchValue);
+  });
+}, [keyword, tours]);
 
   return (
     <div>
@@ -359,6 +379,25 @@ export default function TourManagement() {
         </div>
       )}
 
+      <div className="mb-4 rounded-lg border border-blue-100 bg-white p-4 shadow-sm">
+        <div className="relative">
+          <Search
+            size={18}
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+          />
+          <input
+            type="text"
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
+            placeholder="Tìm theo ID, tên tour, giá hoặc địa điểm..."
+            className="h-11 w-full rounded-md border border-slate-200 bg-slate-50 pl-11 pr-4 text-sm text-slate-800 outline-none transition focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-100"
+          />
+        </div>
+
+        <p className="mt-2 text-sm text-slate-500">
+          Tìm thấy {filteredTours.length} tour phù hợp.
+        </p>
+      </div>
       <div className="overflow-x-auto rounded-lg border border-slate-100">
         <table className="w-full min-w-[900px] text-left text-sm">
           <thead className="bg-blue-50 text-slate-700">
@@ -372,7 +411,7 @@ export default function TourManagement() {
             </tr>
           </thead>
           <tbody>
-            {tours.map((tour) => (
+            {filteredTours.map((tour) => (
               <tr key={tour.id} className="border-t border-slate-100 hover:bg-slate-50">
                 <td className="p-3 font-semibold text-slate-700">{tour.id}</td>
                 <td className="p-3 font-medium text-slate-800">{tour.title}</td>
@@ -403,6 +442,13 @@ export default function TourManagement() {
                 </td>
               </tr>
             ))}
+             {filteredTours.length === 0 && (
+              <tr>
+                <td colSpan="6" className="p-8 text-center text-slate-500">
+                  Không tìm thấy tour phù hợp.
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>

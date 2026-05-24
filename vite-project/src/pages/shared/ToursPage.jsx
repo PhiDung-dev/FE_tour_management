@@ -12,6 +12,8 @@ export default function ToursPage() {
   const [tours, setTours] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [keyword, setKeyword] = useState("");
+  const [maxPrice, setMaxPrice] = useState(100000000);
 
   const fetchTours = async () => {
     try {
@@ -42,6 +44,26 @@ export default function ToursPage() {
     }));
   }, [tours]);
 
+  const filteredTours = useMemo(() => {
+    const searchValue = keyword.trim().toLowerCase();
+
+    return normalizedTours.filter((tour) => {
+      const searchText = `${tour.title} ${tour.location}`.toLowerCase();
+
+      const matchKeyword =
+        !searchValue || searchText.includes(searchValue);
+
+      const matchPrice = Number(tour.price || 0) <= maxPrice;
+
+      return matchKeyword && matchPrice;
+    });
+  }, [normalizedTours, keyword, maxPrice]);
+
+  const handleResetFilter = () => {
+    setKeyword("");
+    setMaxPrice(100000000);
+  };
+
   return (
     <main className="min-h-screen bg-slate-50 px-4 pb-14 pt-24 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
@@ -58,7 +80,13 @@ export default function ToursPage() {
 
         <div className="grid gap-6 lg:grid-cols-[300px_1fr] lg:items-start">
           <aside className="lg:sticky lg:top-28">
-            <TourFilter />
+            <TourFilter
+              keyword={keyword}
+              maxPrice={maxPrice}
+              onKeywordChange={setKeyword}
+              onMaxPriceChange={setMaxPrice}
+              onReset={handleResetFilter}
+            />
           </aside>
 
           <section>
@@ -68,15 +96,11 @@ export default function ToursPage() {
                   Tất cả tour
                 </h2>
                 <p className="mt-1 text-sm text-slate-500">
-                  {loading
+                 {loading
                     ? "Đang tải danh sách tour..."
-                    : `${normalizedTours.length} tour đang sẵn sàng cho bạn.`}
+                    : `${filteredTours.length} tour phù hợp.`
+                  }
                 </p>
-              </div>
-
-              <div className="inline-flex items-center gap-2 rounded-md border border-blue-100 bg-white px-4 py-2 text-sm font-semibold text-slate-600 shadow-sm">
-                <SlidersHorizontal size={17} className="text-blue-500" />
-                Sắp xếp phù hợp
               </div>
             </div>
 
@@ -92,7 +116,7 @@ export default function ToursPage() {
               </div>
             )}
 
-            {!loading && normalizedTours.length === 0 && !error && (
+            {!loading && filteredTours.length === 0 && !error && (
               <div className="rounded-lg border border-blue-100 bg-white p-8 text-center">
                 <p className="font-semibold text-slate-700">Chưa có tour nào</p>
                 <p className="mt-1 text-sm text-slate-500">
@@ -103,7 +127,7 @@ export default function ToursPage() {
 
             {!loading && normalizedTours.length > 0 && (
               <div className="grid auto-rows-fr grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
-                {normalizedTours.map((tour) => (
+                {filteredTours.map((tour) => (
                   <TourItem
                     key={tour.id}
                     id={tour.id}

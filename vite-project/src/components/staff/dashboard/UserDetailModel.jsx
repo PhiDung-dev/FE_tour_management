@@ -29,7 +29,6 @@ export default function UserDetailModal ({ user, onClose }) {
                     <InfoRow icon={Phone} label="Số điện thoại" value={user.phone} />
                     <InfoRow icon={MapPin} label="Địa chỉ" value={user.address} />
                     <InfoRow icon={ShieldCheck} label="Vai trò" value={user.role} />
-                    <InfoRow label="Ngày tạo" value={user.createdAt} />
                 </div>
 
                 <div className="flex justify-end border-t border-slate-100 p-5">

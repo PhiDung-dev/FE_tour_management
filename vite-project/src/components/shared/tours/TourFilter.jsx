@@ -1,10 +1,13 @@
-import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilter, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 
-export default function TourFilter() {
-  const [maxPrice, setMaxPrice] = useState(50000000);
-
+export default function TourFilter({
+  keyword,
+  maxPrice,
+  onKeywordChange,
+  onMaxPriceChange,
+  onReset,
+}) {
   const formatPrice = (price) =>
     new Intl.NumberFormat("vi-VN", {
       style: "currency",
@@ -27,23 +30,21 @@ export default function TourFilter() {
       <div className="space-y-5">
         <div>
           <label className="mb-2 block text-sm font-semibold text-slate-700">
-            Tìm kiếm địa điểm
+            Tìm kiếm tour
           </label>
 
-          <div className="flex flex-col gap-3">
-            <input
-              className="h-11 w-full rounded-md border border-blue-200 px-4 text-base text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
-              type="text"
-              placeholder="Nhập địa điểm"
+          <div className="relative">
+            <FontAwesomeIcon
+              icon={faMagnifyingGlass}
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
             />
-
-            <button
-              className="inline-flex h-8 items-center justify-center gap-2 rounded-md bg-blue-500 px-5 font-semibold text-white transition hover:bg-blue-700 active:bg-blue-800"
-              type="button"
-            >
-              <FontAwesomeIcon icon={faMagnifyingGlass} />
-              Tìm
-            </button>
+            <input
+              className="h-11 w-full rounded-md border border-blue-200 pl-11 pr-4 text-base text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+              type="text"
+              value={keyword}
+              onChange={(e) => onKeywordChange(e.target.value)}
+              placeholder="Nhập tên tour / địa điểm"
+            />
           </div>
         </div>
 
@@ -64,7 +65,7 @@ export default function TourFilter() {
             max={100000000}
             step={500000}
             value={maxPrice}
-            onChange={(e) => setMaxPrice(Number(e.target.value))}
+            onChange={(e) => onMaxPriceChange(Number(e.target.value))}
           />
 
           <div className="mt-2 flex justify-between text-xs font-medium text-slate-500">
@@ -72,6 +73,14 @@ export default function TourFilter() {
             <span>100.000.000đ</span>
           </div>
         </div>
+
+        <button
+          type="button"
+          onClick={onReset}
+          className="h-10 w-full rounded-md border border-blue-100 bg-blue-50 font-semibold text-blue-600 transition hover:bg-blue-100"
+        >
+          Xóa bộ lọc
+        </button>
       </div>
     </div>
   );

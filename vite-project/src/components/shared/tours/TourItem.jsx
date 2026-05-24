@@ -45,11 +45,6 @@ export default function TourItem({
           alt={title || "Tour image"}
           onError={() => setImageSrc(fallbackImage)}
         />
-
-        <div className="absolute left-3 top-3 rounded-md bg-white/90 px-3 py-1 text-sm font-semibold text-blue-600 shadow-sm backdrop-blur">
-          Tour nổi bật
-        </div>
-
         <button
           type="button"
           onClick={handleToggleFavorite}

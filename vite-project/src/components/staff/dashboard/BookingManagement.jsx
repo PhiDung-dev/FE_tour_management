@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { CheckCircle2, ClipboardList, Clock3, UserRoundCheck, XCircle } from "lucide-react";
-import StatCard from "../../components/staff/bookingManagement/StartCart";
+import StatCard from "./StartCart";
 
 export default function BookingManagementPage() {
   const [bookings, setBookings] = useState([
@@ -8,14 +8,14 @@ export default function BookingManagementPage() {
       id: "BK001",
       customerName: "Nguyễn Văn A",
       tourName: "Hành trình di sản Hội An",
-      bookingDate: "2026-05-10",
+      startDate: "2026-05-10",
       status: "Pending",
     },
     {
       id: "BK002",
       customerName: "Trần Thị B",
       tourName: "Khám phá động Phong Nha",
-      bookingDate: "2026-05-12",
+      startDate: "2026-05-12",
       status: "Pending",
     },
   ]);
@@ -42,7 +42,7 @@ export default function BookingManagementPage() {
   };
 
   return (
-    <main className="min-h-screen bg-slate-50 px-4 pb-10 pt-24 sm:px-6 lg:px-8">
+    <main className="min-h-screen bg-slate-50 px-4 pb-10 pt-2 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="mb-6 flex flex-col gap-4 rounded-lg border border-blue-100 bg-white p-5 shadow-sm sm:p-6 md:flex-row md:items-center md:justify-between">
           <div>
@@ -100,10 +100,10 @@ export default function BookingManagementPage() {
             <table className="w-full min-w-[760px] text-left text-sm">
               <thead className="bg-blue-50 text-slate-700">
                 <tr>
-                  <th className="p-3 font-semibold">Mã đơn</th>
+                  <th className="p-3 font-semibold">Mã đặt tour</th>
                   <th className="p-3 font-semibold">Khách hàng</th>
                   <th className="p-3 font-semibold">Tour</th>
-                  <th className="p-3 font-semibold">Ngày đặt</th>
+                  <th className="p-3 font-semibold">Ngày khởi hành</th>
                   <th className="p-3 font-semibold">Trạng thái</th>
                   <th className="p-3 text-right font-semibold">Thao tác</th>
                 </tr>
@@ -123,7 +123,7 @@ export default function BookingManagementPage() {
                     </td>
                     <td className="p-3 text-slate-600">{booking.tourName}</td>
                     <td className="p-3 text-slate-500">
-                      {booking.bookingDate}
+                      {booking.startDate}
                     </td>
                     <td className="p-3">
                       <span className="inline-flex items-center gap-1 rounded-md bg-orange-50 px-3 py-1 text-xs font-bold text-orange-600">

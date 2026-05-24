@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { Eye, Mail, MapPin, Phone, Search, User, Users } from "lucide-react";
-import UserDetailModal from "../../components/staff/userManagement/UserDetailModel";
+import UserDetailModal from "./UserDetailModel";
 
 export default function UserManagementPage() {
   const [keyword, setKeyword] = useState("");
@@ -16,7 +16,6 @@ export default function UserManagementPage() {
       phone: "0123456789",
       address: "Hà Nội, Việt Nam",
       role: "USER",
-      createdAt: "2026-05-10",
     },
     {
       id: "U002",
@@ -25,7 +24,6 @@ export default function UserManagementPage() {
       phone: "0987654321",
       address: "Đà Nẵng, Việt Nam",
       role: "USER",
-      createdAt: "2026-05-15",
     },
   ];
 
@@ -43,7 +41,7 @@ export default function UserManagementPage() {
   }, [keyword, statusFilter]);
 
   return (
-    <main className="min-h-screen bg-slate-50 px-4 pb-10 pt-24 sm:px-6 lg:px-8">
+    <main className="min-h-screen bg-slate-50 px-4 pb-10 pt-2 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <section className="mb-6 rounded-lg border border-blue-100 bg-white p-5 shadow-sm sm:p-6">
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">

@@ -34,4 +34,22 @@ axiosClient.interceptors.request.use(
     }
 );
 
+axiosClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const status = error.response?.status;
+
+    if (status === 403) {
+      window.location.href = "/403";
+    }
+
+    if (status === 401) {
+      localStorage.removeItem("token");
+      window.location.href = "/login";
+    }
+
+    return Promise.reject(error);
+  }
+);
+
 export default axiosClient;

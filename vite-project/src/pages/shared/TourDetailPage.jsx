@@ -2,12 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { CalendarDays, CheckCircle2, MapPinned, Send, Star } from "lucide-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faBolt,
-  faCircleInfo,
-  faLocationDot,
-  faShield,
-} from "@fortawesome/free-solid-svg-icons";
+import { faBolt, faCircleInfo, faLocationDot, faShield } from "@fortawesome/free-solid-svg-icons";
 
 import { readTour } from "../../api/TourApi";
 import { readRatings, createRating } from "../../api/ratingApi";
@@ -272,22 +267,6 @@ export default function TourDetailPage() {
                 <span className="ml-1 text-sm font-medium text-slate-500">
                   / khách
                 </span>
-              </div>
-            </div>
-
-            <div className="py-5">
-              <label className="mb-2 block text-sm font-bold text-slate-800">
-                Chọn lịch trình
-              </label>
-
-              <div className="relative">
-                <CalendarDays
-                  size={19}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-500"
-                />
-                <select className="h-12 w-full cursor-pointer rounded-md border border-slate-200 bg-slate-50 pl-12 pr-4 text-sm font-medium text-slate-700 outline-none transition focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-100">
-                  <option value="">Đang cập nhật lịch trình</option>
-                </select>
               </div>
             </div>
 
