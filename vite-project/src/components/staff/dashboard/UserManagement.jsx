@@ -2,7 +2,7 @@ import React, { useMemo, useState } from "react";
 import { Eye, Mail, MapPin, Phone, Search, User, Users } from "lucide-react";
 import UserDetailModal from "./UserDetailModel";
 
-export default function UserManagementPage() {
+export default function UserManagement() {
   const [keyword, setKeyword] = useState("");
   // eslint-disable-next-line no-unused-vars
   const [statusFilter, setStatusFilter] = useState("all");
@@ -15,7 +15,6 @@ export default function UserManagementPage() {
       email: "vana@example.com",
       phone: "0123456789",
       address: "Hà Nội, Việt Nam",
-      role: "USER",
     },
     {
       id: "U002",
@@ -23,7 +22,6 @@ export default function UserManagementPage() {
       email: "thib@example.com",
       phone: "0987654321",
       address: "Đà Nẵng, Việt Nam",
-      role: "USER",
     },
   ];
 
@@ -101,7 +99,6 @@ export default function UserManagementPage() {
                   <th className="p-3">Họ tên</th>
                   <th className="p-3">Email</th>
                   <th className="p-3">Số điện thoại</th>
-                  <th className="p-3">Vai trò</th>
                   <th className="p-3 text-right">Thao tác</th>
                 </tr>
               </thead>
@@ -120,11 +117,6 @@ export default function UserManagementPage() {
                     </td>
                     <td className="p-3 text-slate-500">{user.email}</td>
                     <td className="p-3 text-slate-500">{user.phone}</td>
-                    <td className="p-3">
-                      <span className="rounded-md bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600">
-                        {user.role}
-                      </span>
-                    </td>
                     <td className="p-3 text-right">
                       <button
                         onClick={() => setSelectedUser(user)}

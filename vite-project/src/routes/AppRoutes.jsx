@@ -9,7 +9,6 @@ import LogInPage from '../pages/auth/LoginPage'
 import SignUpPage from '../pages/auth/SignUpPage'
 import TourDetailPage from '../pages/shared/TourDetailPage'
 import MainLayout from '../layouts/MainLayout'
-import StaffDashboardPage from '../pages/staff/StaffDashboardPage'
 import ForbiddenPage from '../pages/shared/FobiddenPage'
 
 import ChangePasswordPage from '../components/protected/myInfo/ChangePassword'
@@ -26,7 +25,7 @@ import AdminLayout from '../layouts/AdminLayout'
 
 /* STAFF */
 import StaffLayout from '../layouts/StaffLayout'
-
+import StaffDashboardPage from '../pages/staff/StaffDashboardPage'
 
 function AppRoutes() {
 

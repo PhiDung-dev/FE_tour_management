@@ -51,7 +51,7 @@ export default function LogInPage() {
       if (role === "ADMIN") {
         navigate("/admin/dashboard");
       } else if (role === "STAFF") {
-        navigate("/staff/bookings");
+        navigate("/staff/dashboard");
       } else {
         navigate("/myInfor");
       }
