@@ -45,7 +45,7 @@ export default function UserManagement() {
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
               <p className="mb-2 text-sm font-semibold uppercase tracking-wide text-blue-500">
-                Admin Dashboard
+                Staff Dashboard
               </p>
               <h1 className="text-3xl font-bold text-slate-900">
                 Quản lý user
