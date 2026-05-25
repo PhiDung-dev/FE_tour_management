@@ -35,6 +35,14 @@ export const readUser = async (id) => {
     return response.data;
 }
 
+export const readUserByAccountId = async (accountId) => {
+  const response = await axiosClient.get(
+    `/users/account/${accountId}`
+  );
+
+  return response.data;
+};
+
 // UPDATE
 export const updateUser = async (id, data) => {
 

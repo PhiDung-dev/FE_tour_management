@@ -9,7 +9,8 @@ export default function LogoutButton({className}) {
 
     // XÓA TOKEN
     localStorage.removeItem("token");
-
+    localStorage.removeItem("accountId");
+    localStorage.removeItem("userId");
     // CHUYỂN VỀ LOGIN
     navigate("/login");
   };

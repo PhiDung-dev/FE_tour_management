@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { readTour } from "../../api/TourApi";
 import { readSchedules } from "../../api/ScheduleApi";
+import { createBooking } from "../../api/bookingApi";
 
 export default function BookingPage() {
   const [searchParams] = useSearchParams();
@@ -75,32 +76,46 @@ export default function BookingPage() {
     return Number(tour?.price || 0) * guestCount;
   }, [tour?.price, guestCount]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!tour) {
-      alert("Không tìm thấy tour.");
-      return;
+    try {
+      const userId = localStorage.getItem("userId");
+
+      if (!userId) {
+        alert("Vui lòng cập nhật thông tin cá nhân trước.");
+        return;
+      }
+
+      if (!scheduleId) {
+        alert("Vui lòng chọn lịch trình.");
+        return;
+      }
+
+      const bookingData = {
+        quantity: guestCount,
+        description: note,
+        userId,
+        scheduleId,
+      };
+
+      console.log(bookingData);
+
+      await createBooking(bookingData);
+
+      alert("Đặt tour thành công!");
+    } catch (error) {
+      console.error("Lỗi khi tạo booking:", error);
+
+      console.log(error.response?.data);
+
+      alert(
+        error.response?.data?.message ||
+          "Tạo booking thất bại."
+      );
     }
-
-    if (!scheduleId) {
-      alert("Vui lòng chọn lịch trình.");
-      return;
-    }
-
-    const bookingData = {
-      tourId: tour.id,
-      scheduleId,
-      quantity: guestCount,
-      description: note,
-      totalPrice,
-    };
-
-    console.log("Booking data:", bookingData);
-    alert("Đặt tour thành công! Đơn của bạn đang chờ nhân viên phê duyệt.");
-
-    // createBooking(bookingData)
   };
+
 
   if (loading) {
     return (
@@ -288,10 +303,12 @@ export default function BookingPage() {
 
             <button
               type="submit"
-              className="mt-5 flex h-12 w-full items-center justify-center gap-2 rounded-md bg-orange-500 font-bold text-white shadow-lg shadow-orange-200 transition hover:bg-orange-600 active:scale-[0.98]"
+              disabled={loading}
+              className="mt-5 flex h-12 w-full items-center justify-center gap-2 rounded-md bg-orange-500 font-bold text-white shadow-lg shadow-orange-200 transition hover:bg-orange-600 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
             >
               <TicketCheck size={19} />
-              Xác nhận đặt tour
+
+              {loading ? "Đang xử lý..." : "Xác nhận đặt tour"}
             </button>
 
             <p className="mt-4 flex items-center justify-center gap-2 text-center text-xs font-medium text-slate-400">

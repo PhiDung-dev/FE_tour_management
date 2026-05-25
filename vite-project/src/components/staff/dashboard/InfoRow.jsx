@@ -7,7 +7,7 @@ export default function InfoRow ({ icon: Icon, label, value }) {
           <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
             {label}
           </p>
-          <p className="mt-1 font-semibold text-slate-800">{value}</p>
+          <p className="mt-1 font-semibold text-slate-800">{value || "Chưa cập nhật"}</p>
         </div>
       </div>
     </>

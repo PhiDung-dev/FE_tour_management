@@ -1,15 +1,17 @@
-import React, { useState } from "react";
-import { MapPinned, Users, UserCog } from "lucide-react";
-import UserManagement from "../../components/staff/dashboard/UserManagement";
+import { useState } from "react";
+import { ClipboardList, CreditCard, Users } from "lucide-react";
+
 import BookingManagement from "../../components/staff/dashboard/BookingManagement";
 import PaymentManagement from "../../components/staff/dashboard/PaymentManagement";
+import UserManagement from "../../components/staff/dashboard/UserManagement";
+
 export default function StaffDashboardPage() {
   const [activeTab, setActiveTab] = useState("users");
 
   const pages = [
-    { id: "users", label: "Quản lý user", icon: MapPinned },
-    { id: "booking", label: "Quản lý đặt tour", icon: Users },
-    { id: "payment", label: "Quản lý thanh toán", icon: UserCog },
+    { id: "users", label: "Quản lý user", icon: Users },
+    { id: "booking", label: "Quản lý đặt tour", icon: ClipboardList },
+    { id: "payment", label: "Quản lý thanh toán", icon: CreditCard },
   ];
 
   const activePage = pages.find((page) => page.id === activeTab);
@@ -29,9 +31,9 @@ export default function StaffDashboardPage() {
 
           <div className="flex items-center gap-3">
             <span className="hidden text-sm font-medium text-slate-500 sm:block">
-              Xin chào, Nhân Viên
+              Xin chào, Nhân viên
             </span>
-            <div className="flex h-11 w-11 items-center justify-center rounded-md bg-blue-500 font-bold text-white shadow-sm">
+            <div className="flex h-11 w-11 items-center justify-center rounded-md bg-blue-500 text-sm font-bold text-white shadow-sm">
               Staff
             </div>
           </div>

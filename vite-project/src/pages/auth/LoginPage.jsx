@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Lock, User, ArrowRight, MapPinned } from "lucide-react";
 
 import { login } from "../../api/authApi";
-import { getRoleFromToken } from "../../utils/jwt";
+import { getAccountIdFromToken, getRoleFromToken } from "../../utils/jwt";
 
 import anhPcanh1 from "../../assets/images/anhPcanh1.png";
 import anhPcanh2 from "../../assets/images/anhPcanh2.jpg";
@@ -42,9 +42,15 @@ export default function LogInPage() {
       setLoading(true);
 
       const data = await login(formData);
+
       const token = data.result.token;
 
       localStorage.setItem("token", token);
+
+      // lưu accountId
+      const accountId = getAccountIdFromToken(token);
+
+      localStorage.setItem("accountId", accountId);
 
       const role = getRoleFromToken(token);
 

@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { Heart, Lock, User } from "lucide-react";
+
 import FavoriteTourPage from "../../components/protected/myInfo/FavoriteTour";
 import ChangePasswordPage from "../../components/protected/myInfo/ChangePassword";
 import LogoutButton from "../../components/protected/myInfo/LogoutButton";
 import MyInforForm from "../../components/protected/myInfo/myInfoForm";
-import { readUsers } from "../../api/userApi";
+
+import { readUserByAccountId } from "../../api/userApi";
 import { getAccountIdFromToken } from "../../utils/jwt";
 
 const emptyUserInfo = {
@@ -20,61 +22,146 @@ function normalizeUser(data, accountId = "") {
   const user = data?.result || data || {};
 
   return {
-    id: user.id || user.userId || "",
-    fullName: user.fullName || user.fullname || "",
+    id: user.id || "",
+    fullName: user.fullName || "",
     email: user.email || "",
-    phoneNumber: user.phoneNumber || user.phone || "",
+    phoneNumber: user.phoneNumber || "",
     address: user.address || "",
-    accountId: user.accountId || user.account?.id || accountId,
+    accountId: user.account?.id || accountId,
   };
 }
 
-function getUsersArray(data) {
-  return data?.result || data || [];
-}
-
 export default function MyInforPage() {
-  const [activeTab, setActiveTab] = useState("profile");
-  const [userInfo, setUserInfo] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] =
+    useState("profile");
+
+  const [userInfo, setUserInfo] =
+    useState(null);
+
+  const [loading, setLoading] =
+    useState(true);
+
   const [error, setError] = useState("");
 
   const fetchUserInfo = async () => {
-    const token = localStorage.getItem("token");
-    const accountId = getAccountIdFromToken(token);
-
-    if (!accountId) {
-      setError("Không tìm thấy accountId trong token. Vui lòng đăng nhập lại.");
-      setUserInfo(null);
-      setLoading(false);
-      return;
-    }
-
     try {
       setLoading(true);
-      setError("");
 
-      const data = await readUsers();
-      const users = getUsersArray(data);
-      const currentUser = users.find(
-        (user) => String(user.accountId || user.account?.id) === String(accountId)
+      const token =
+        localStorage.getItem("token");
+
+      if (!token) {
+        setError(
+          "Bạn chưa đăng nhập."
+        );
+
+        setLoading(false);
+
+        return;
+      }
+
+      const accountId =
+        getAccountIdFromToken(token);
+
+      if (!accountId) {
+        setError(
+          "Không tìm thấy accountId."
+        );
+
+        setLoading(false);
+
+        return;
+      }
+
+      localStorage.setItem(
+        "accountId",
+        accountId
       );
 
-      if (currentUser) {
-        setUserInfo(normalizeUser(currentUser, accountId));
-      } else {
+      console.log(
+        "ACCOUNT ID:",
+        accountId
+      );
+
+      const response =
+        await readUserByAccountId(
+          accountId
+        );
+
+      console.log(
+        "USER RESPONSE:",
+        response
+      );
+
+      const normalizedUser =
+        normalizeUser(
+          response,
+          accountId
+        );
+
+      // có user
+      if (normalizedUser.id) {
+        localStorage.setItem(
+          "userId",
+          normalizedUser.id
+        );
+
+        console.log(
+          "Đã lưu userId:",
+          normalizedUser.id
+        );
+
+        setUserInfo(normalizedUser);
+      }
+      // chưa có user
+      else {
+        localStorage.removeItem(
+          "userId"
+        );
+
         setUserInfo({
           ...emptyUserInfo,
           accountId,
         });
       }
+
+      setError("");
     } catch (err) {
-      console.error("Lỗi khi lấy thông tin user:", err);
-      setError("Không thể tải thông tin cá nhân.");
-      setUserInfo({
-        ...emptyUserInfo,
-        accountId,
-      });
+      console.error(
+        "Lỗi khi lấy thông tin user:",
+        err
+      );
+
+      // account chưa có user
+      if (
+        err.response?.status === 404 ||
+        err.response?.status === 400
+      ) {
+        const token =
+          localStorage.getItem(
+            "token"
+          );
+
+        const accountId =
+          getAccountIdFromToken(
+            token
+          );
+
+        localStorage.removeItem(
+          "userId"
+        );
+
+        setUserInfo({
+          ...emptyUserInfo,
+          accountId,
+        });
+
+        return;
+      }
+
+      setError(
+        "Không thể tải thông tin cá nhân."
+      );
     } finally {
       setLoading(false);
     }
@@ -84,8 +171,21 @@ export default function MyInforPage() {
     fetchUserInfo();
   }, []);
 
-  const handleUpdatedUser = (updatedUser) => {
-    setUserInfo(normalizeUser(updatedUser, userInfo?.accountId));
+  const handleUpdatedUser = (
+    updatedUser
+  ) => {
+    const normalized =
+      normalizeUser(updatedUser);
+
+    setUserInfo(normalized);
+
+    // lưu userId sau create/update
+    if (normalized.id) {
+      localStorage.setItem(
+        "userId",
+        normalized.id
+      );
+    }
   };
 
   const tabButtonClass = (tab) =>
@@ -104,12 +204,19 @@ export default function MyInforPage() {
               <p className="mb-2 text-sm font-semibold uppercase tracking-wide text-blue-500">
                 Tài khoản
               </p>
-              <h1 className="text-3xl font-bold text-slate-900">Thông tin cá nhân</h1>
+
+              <h1 className="text-3xl font-bold text-slate-900">
+                Thông tin cá nhân
+              </h1>
+
               <p className="mt-2 text-slate-500">
-                Quản lý họ tên, email, số điện thoại và địa chỉ của bạn.
+                Quản lý họ tên, email,
+                số điện thoại và địa
+                chỉ của bạn.
               </p>
             </div>
           </div>
+
           <LogoutButton className="mt-auto" />
         </section>
 
@@ -125,26 +232,57 @@ export default function MyInforPage() {
               <div className="flex h-12 w-12 items-center justify-center rounded-md bg-blue-500 text-white">
                 <User size={24} />
               </div>
+
               <h2 className="mt-3 text-xl font-bold text-slate-900">
-                {loading ? "Đang tải..." : userInfo?.fullName || "Chưa cập nhật"}
+                {loading
+                  ? "Đang tải..."
+                  : userInfo?.fullName ||
+                    "Chưa cập nhật"}
               </h2>
-              <p className="mt-1 text-sm text-slate-500">{userInfo?.email || ""}</p>
+
+              <p className="mt-1 text-sm text-slate-500">
+                {userInfo?.email || ""}
+              </p>
             </div>
 
             <div className="space-y-2">
-              <button onClick={() => setActiveTab("profile")} className={tabButtonClass("profile")}>
+              <button
+                onClick={() =>
+                  setActiveTab(
+                    "profile"
+                  )
+                }
+                className={tabButtonClass(
+                  "profile"
+                )}
+              >
                 <User size={18} />
                 Thông tin cá nhân
               </button>
 
-              <button onClick={() => setActiveTab("favorite")} className={tabButtonClass("favorite")}>
+              <button
+                onClick={() =>
+                  setActiveTab(
+                    "favorite"
+                  )
+                }
+                className={tabButtonClass(
+                  "favorite"
+                )}
+              >
                 <Heart size={18} />
                 Tour yêu thích
               </button>
 
               <button
-                onClick={() => setActiveTab("changePassword")}
-                className={tabButtonClass("changePassword")}
+                onClick={() =>
+                  setActiveTab(
+                    "changePassword"
+                  )
+                }
+                className={tabButtonClass(
+                  "changePassword"
+                )}
               >
                 <Lock size={18} />
                 Đổi mật khẩu
@@ -153,18 +291,39 @@ export default function MyInforPage() {
           </aside>
 
           <section className="rounded-lg border border-blue-100 bg-white p-5 shadow-sm sm:p-7">
-            {activeTab === "profile" && (
+            {activeTab ===
+              "profile" && (
               <>
-                {loading && <p className="text-slate-500">Đang tải thông tin cá nhân...</p>}
-                {!loading && userInfo && (
-                  <MyInforForm userInfoProp={userInfo} onUpdated={handleUpdatedUser} />
+                {loading && (
+                  <p className="text-slate-500">
+                    Đang tải thông tin cá
+                    nhân...
+                  </p>
                 )}
+
+                {!loading &&
+                  userInfo && (
+                    <MyInforForm
+                      userInfoProp={
+                        userInfo
+                      }
+                      onUpdated={
+                        handleUpdatedUser
+                      }
+                    />
+                  )}
               </>
             )}
 
-            {activeTab === "favorite" && <FavoriteTourPage />}
+            {activeTab ===
+              "favorite" && (
+              <FavoriteTourPage />
+            )}
 
-            {activeTab === "changePassword" && <ChangePasswordPage />}
+            {activeTab ===
+              "changePassword" && (
+              <ChangePasswordPage />
+            )}
           </section>
         </div>
       </div>
