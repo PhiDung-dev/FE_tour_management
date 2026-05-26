@@ -35,6 +35,15 @@ export const readFavoriteTour = async (id) => {
     return response.data;
 }
 
+export const readFavoriteToursByUserId = async (userId) => {
+
+    const response = await axiosClient.get(
+        `${BASE_URL}/user/${userId}`
+    );
+
+    return response.data;
+}
+
 // DELETE
 export const deleteFavoriteTour = async (id) => {
 

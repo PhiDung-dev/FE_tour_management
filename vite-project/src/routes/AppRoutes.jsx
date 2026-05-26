@@ -26,6 +26,7 @@ import AdminLayout from '../layouts/AdminLayout'
 /* STAFF */
 import StaffLayout from '../layouts/StaffLayout'
 import StaffDashboardPage from '../pages/staff/StaffDashboardPage'
+import BookingListPage from '../pages/user/BookingListPage'
 
 function AppRoutes() {
 
@@ -55,13 +56,13 @@ function AppRoutes() {
                     />
 
                     <Route 
-                        path='/favoriteTour'
-                        element={<FavoriteTourPage />}
+                        path='/booking' 
+                        element={<BookingPage />}
                     />
 
                     <Route 
-                        path='/booking' 
-                        element={<BookingPage />}
+                        path='/bookingList' 
+                        element={<BookingListPage />}
                     />
 
                 </Route>

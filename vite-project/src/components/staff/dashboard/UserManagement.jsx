@@ -1,78 +1,92 @@
 import { useEffect, useMemo, useState } from "react";
 import { Eye, Search } from "lucide-react";
-
 import UserDetailModal from "./UserDetailModel";
 import { readUsers } from "../../../api/userApi";
+import { readAccounts } from "../../../api/accountApi";
 
-function getResult(data) {
-  return data?.result || data || [];
-}
-
-function normalizeRoles(roles) {
-  const roleList = Array.isArray(roles) ? roles : roles ? [roles] : [];
-
-  return roleList.map((role) => String(role).toUpperCase().replace("ROLE_", ""));
-}
-
-export default function UserManagement() {
+export default function UserManagement({
+  roleFilter = "USER",
+  title = "Danh sách người dùng", 
+}) {
   const [keyword, setKeyword] = useState("");
   const [selectedUser, setSelectedUser] = useState(null);
+  const [accounts, setAccounts] = useState([]);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const fetchUsers = async () => {
+  const fetchData = async () => {
     try {
       setLoading(true);
 
-      const data = await readUsers();
+      const [accountData, userData] = await Promise.all([
+        readAccounts(),
+        readUsers(),
+      ]);
 
-      setUsers(getResult(data));
+      setAccounts(accountData?.result || accountData || []);
+      setUsers(userData?.result || userData || []);
     } catch (error) {
-      console.error("Lỗi khi lấy users:", error);
+      console.error("Lỗi khi lấy danh sách account/user:", error);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchUsers();
+    fetchData();
   }, []);
 
   const normalizedUsers = useMemo(() => {
-    return users.map((user) => ({
-      id: user.id || "",
-      accountId: user.account?.id || "",
-      username: user.account?.username || "",
-      fullName: user.fullName || "",
-      address: user.address || "",
-      email: user.email || "",
-      phoneNumber: user.phoneNumber || "",
-      roles: normalizeRoles(user.account?.roles),
-    }));
-  }, [users]);
+    const userByAccountId = new Map();
+
+    users.forEach((user) => {
+      const accountId = user.account?.id || user.accountId;
+      if (accountId) {
+        userByAccountId.set(String(accountId), user);
+      }
+    });
+
+    return accounts.map((account) => {
+      const user = userByAccountId.get(String(account.id));
+
+      const rawRoles = account.roles || [];
+      const roles = Array.isArray(rawRoles)
+        ? rawRoles
+        : rawRoles
+          ? [rawRoles]
+          : [];
+
+      const normalizedRoles = roles.map((role) =>
+        String(role).toUpperCase().replace("ROLE_", "")
+      );
+
+      return {
+        id: user?.id || "",
+        accountId: account.id || "",
+        username: account.username || "",
+        fullName: user?.fullName || "",
+        email: user?.email || "",
+        phone: user?.phoneNumber || "",
+        address: user?.address || "",
+        roles: normalizedRoles,
+      };
+    });
+  }, [accounts, users]);
 
   const filteredUsers = useMemo(() => {
-    const searchValue = keyword.trim().toLowerCase();
-
     return normalizedUsers.filter((user) => {
-      const searchText = [
-        user.id,
-        user.accountId,
-        user.username,
-        user.fullName,
-        user.email,
-        user.phoneNumber,
-        user.roles.join(" "),
-      ]
-        .join(" ")
-        .toLowerCase();
+      const searchText =
+        `${user.id} ${user.accountId} ${user.username} ${user.fullName} ${user.email} ${user.phone}`.toLowerCase();
 
-      return searchText.includes(searchValue);
+      const matchKeyword = searchText.includes(keyword.toLowerCase());
+      const matchRole = user.roles.includes(roleFilter.toUpperCase());
+
+      return matchKeyword && matchRole;
     });
-  }, [keyword, normalizedUsers]);
+  }, [keyword, normalizedUsers, roleFilter]);
 
   return (
-    <main className="min-h-screen bg-slate-50 px-4 pb-10 pt-2 sm:px-6 lg:px-8">
+    <main className="bg-slate-50 px-4 pb-10 pt-2 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <section className="mb-6 rounded-lg border border-blue-100 bg-white p-4 shadow-sm sm:p-5">
           <div className="relative">
@@ -80,12 +94,11 @@ export default function UserManagement() {
               size={19}
               className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
             />
-
             <input
               type="text"
               value={keyword}
-              onChange={(event) => setKeyword(event.target.value)}
-              placeholder="Tìm theo mã user, username, họ tên, email hoặc số điện thoại..."
+              onChange={(e) => setKeyword(e.target.value)}
+              placeholder="Tìm theo mã, username, họ tên, email hoặc số điện thoại..."
               className="h-12 w-full rounded-md border border-slate-200 bg-slate-50 pl-12 pr-4 text-slate-800 outline-none transition focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-100"
             />
           </div>
@@ -93,10 +106,7 @@ export default function UserManagement() {
 
         <section className="rounded-lg border border-blue-100 bg-white p-4 shadow-sm sm:p-6">
           <div className="mb-5">
-            <h2 className="text-xl font-bold text-slate-900">
-              Danh sách người dùng
-            </h2>
-
+            <h2 className="text-xl font-bold text-slate-900">{title}</h2>
             <p className="mt-1 text-sm text-slate-500">
               {loading
                 ? "Đang tải dữ liệu..."
@@ -105,10 +115,10 @@ export default function UserManagement() {
           </div>
 
           <div className="overflow-x-auto rounded-lg border border-slate-100">
-            <table className="w-full min-w-[980px] text-left text-sm">
+            <table className="w-full min-w-[1000px] text-left text-sm">
               <thead className="bg-blue-50 text-slate-700">
                 <tr>
-                  <th className="p-3">Mã user</th>
+                  <th className="p-3">Mã account</th>
                   <th className="p-3">Username</th>
                   <th className="p-3">Họ tên</th>
                   <th className="p-3">Email</th>
@@ -121,35 +131,29 @@ export default function UserManagement() {
               <tbody>
                 {filteredUsers.map((user) => (
                   <tr
-                    key={user.id || user.accountId}
+                    key={user.accountId}
                     className="border-t border-slate-100 transition hover:bg-slate-50"
                   >
                     <td className="p-3 font-bold text-slate-800">
-                      #{user.id || "N/A"}
+                      #{user.accountId}
                     </td>
-
-                    <td className="p-3 font-semibold text-slate-700">
-                      {user.username || "Chưa cập nhật"}
-                    </td>
-
                     <td className="p-3 font-semibold text-slate-800">
+                      {user.username}
+                    </td>
+                    <td className="p-3 text-slate-600">
                       {user.fullName || "Chưa cập nhật"}
                     </td>
-
                     <td className="p-3 text-slate-500">
                       {user.email || "Chưa cập nhật"}
                     </td>
-
                     <td className="p-3 text-slate-500">
-                      {user.phoneNumber || "Chưa cập nhật"}
+                      {user.phone || "Chưa cập nhật"}
                     </td>
-
                     <td className="p-3">
                       <span className="rounded-md bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600">
-                        {user.roles.join(", ") || "Chưa cập nhật"}
+                        {user.roles.join(", ")}
                       </span>
                     </td>
-
                     <td className="p-3 text-right">
                       <button
                         onClick={() => setSelectedUser(user)}
@@ -167,11 +171,7 @@ export default function UserManagement() {
             {!loading && filteredUsers.length === 0 && (
               <div className="px-4 py-14 text-center">
                 <p className="font-semibold text-slate-700">
-                  Không tìm thấy user phù hợp
-                </p>
-
-                <p className="mt-1 text-sm text-slate-500">
-                  Thử nhập tên, email hoặc số điện thoại khác.
+                  Không tìm thấy dữ liệu phù hợp
                 </p>
               </div>
             )}

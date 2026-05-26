@@ -35,6 +35,17 @@ export const readBooking = async (id) => {
     return response.data;
 }
 
+export const readBookingsByUserId =
+  async (userId) => {
+
+    const response =
+      await axiosClient.get(
+        `${BASE_URL}/user/${userId}`
+      );
+
+    return response.data;
+};
+
 // UPDATE
 export const updateBooking = async (id, data) => {
 

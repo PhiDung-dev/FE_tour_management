@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Lock, ShieldCheck, Eye, EyeOff, Save } from "lucide-react";
 import InputPassword from "./InputPassword";
+import { updateAccount } from "../../../api/accountApi";
 
 export default function ChangePassword() {
 
@@ -24,7 +25,7 @@ export default function ChangePassword() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
 
     e.preventDefault();
 
@@ -38,9 +39,40 @@ export default function ChangePassword() {
       return;
     }
 
-    console.log(formData);
+    try {
 
-    // CALL API HERE
+      const accountId =
+        localStorage.getItem("accountId");
+
+      await updateAccount(
+        accountId,
+        {
+          currentPassword:
+            formData.currentPassword,
+
+          password:
+            formData.newPassword,
+        }
+      );
+
+      alert(
+        "Đổi mật khẩu thành công"
+      );
+
+      setFormData({
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      });
+
+    } catch (error) {
+
+      console.error(error);
+
+      alert(
+        "Đổi mật khẩu thất bại"
+      );
+    }
   };
 
   return (

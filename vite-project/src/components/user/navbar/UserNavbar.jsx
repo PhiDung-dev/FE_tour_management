@@ -13,6 +13,7 @@ export default function UserNavbar() {
   const navLinks = [
     { label: "Trang chủ", to: "/" },
     { label: "Danh sách tour", to: "/tours" },
+    { label: "Tour đã đặt", to: "/bookingList" },
     { label: "My info", to: "/myInfor" },
   ];
 

@@ -13,7 +13,7 @@ import {
 
 import {
   deleteFavoriteTour,
-  readFavoriteTours,
+  readFavoriteToursByUserId,
 } from "../../../api/favoriteTourApi";
 
 function getResult(data) {
@@ -43,31 +43,35 @@ export default function FavoriteTour() {
   const [error, setError] =
     useState("");
 
-  const fetchFavoriteTours =
-    async () => {
-      try {
-        setLoading(true);
-        setError("");
+  const fetchFavoriteTours = async () => {
+    try {
+      setLoading(true);
+      setError("");
 
-        const data =
-          await readFavoriteTours();
+      const userId =
+        localStorage.getItem("userId");
 
-        setFavoriteTours(
-          getResult(data)
-        );
-      } catch (error) {
-        console.error(
-          "Lỗi khi lấy favorite tours:",
-          error
+      const data =
+        await readFavoriteToursByUserId(
+          userId
         );
 
-        setError(
-          "Không thể tải danh sách tour yêu thích."
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
+      setFavoriteTours(
+        getResult(data)
+      );
+    } catch (error) {
+      console.error(
+        "Lỗi khi lấy favorite tours:",
+        error
+      );
+
+      setError(
+        "Không thể tải danh sách tour yêu thích."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     fetchFavoriteTours();

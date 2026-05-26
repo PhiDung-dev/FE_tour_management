@@ -62,7 +62,7 @@ export default function StaffDashboardPage() {
         </div>
 
         <section className="rounded-lg border border-blue-100 bg-white p-4 shadow-sm sm:p-6">
-          {activeTab === "users" && <UserManagement />}
+          {activeTab === "users" && <UserManagement title="Khách hàng" roleFilter="USER" />}
           {activeTab === "booking" && <BookingManagement />}
           {activeTab === "payment" && <PaymentManagement />}
         </section>
