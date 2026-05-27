@@ -126,7 +126,8 @@ export default function SignUpPage() {
                       type="text"
                       value={formData.username}
                       onChange={handleChange}
-                      placeholder="Nhập username"
+                      placeholder="Enter username"
+                      autoComplete="off"
                       className="h-12 w-full rounded-md border border-slate-200 bg-slate-50 pl-12 pr-4 text-slate-800 outline-none transition focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-100"
                     />
                   </div>
@@ -147,7 +148,7 @@ export default function SignUpPage() {
                       type={showPassword ? "text" : "password"}
                       value={formData.password}
                       onChange={handleChange}
-                      placeholder="Nhập mật khẩu"
+                      placeholder="Enter password"
                       className="h-12 w-full rounded-md border border-slate-200 bg-slate-50 pl-12 pr-12 text-slate-800 outline-none transition focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-100"
                     />
                     <button
@@ -175,7 +176,7 @@ export default function SignUpPage() {
                       type={showConfirmPassword ? "text" : "password"}
                       value={formData.confirmPassword}
                       onChange={handleChange}
-                      placeholder="Nhập lại mật khẩu"
+                      placeholder="Confirm password"
                       className="h-12 w-full rounded-md border border-slate-200 bg-slate-50 pl-12 pr-12 text-slate-800 outline-none transition focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-100"
                     />
                     <button

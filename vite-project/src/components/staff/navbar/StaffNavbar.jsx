@@ -13,7 +13,7 @@ export default function StaffNavbar() {
   const navLinks = [
     { label: "Trang chủ", to: "/" },
     { label: "Danh sách tour", to: "/tours" },
-    { label: "Dashboard", to: "/staff/dashboard" },
+    { label: "Staff Dashboard", to: "/staff/dashboard" },
     { label: "My info", to: "/staff/myInfor" },
   ];
 

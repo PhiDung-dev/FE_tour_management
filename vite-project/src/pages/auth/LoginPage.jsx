@@ -158,7 +158,8 @@ export default function LogInPage() {
                     name="username"
                     value={formData.username}
                     onChange={handleChange}
-                    placeholder="Nhập username"
+                    placeholder="Enter username"
+                    autoComplete="off"
                     className="h-12 w-full rounded-md border border-slate-200 bg-slate-50 pl-12 pr-4 text-slate-800 outline-none transition focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-100"
                   />
                 </div>
@@ -179,7 +180,7 @@ export default function LogInPage() {
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
-                    placeholder="Nhập mật khẩu"
+                    placeholder="Enter password"
                     className="h-12 w-full rounded-md border border-slate-200 bg-slate-50 pl-12 pr-12 text-slate-800 outline-none transition focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-100"
                   />
                   <button
@@ -199,20 +200,6 @@ export default function LogInPage() {
               )}
 
               <div className="flex items-center justify-between">
-                <label className="flex cursor-pointer items-center gap-2 text-sm text-slate-600">
-                  <input
-                    type="checkbox"
-                    className="h-4 w-4 cursor-pointer rounded accent-blue-500"
-                  />
-                  Ghi nhớ
-                </label>
-
-                <a
-                  href="#"
-                  className="text-sm font-semibold text-blue-600 hover:text-blue-700"
-                >
-                  Quên mật khẩu?
-                </a>
               </div>
 
               <button

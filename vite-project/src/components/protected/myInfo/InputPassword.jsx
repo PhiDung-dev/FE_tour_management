@@ -1,6 +1,6 @@
 import { Eye, EyeOff, Lock } from "lucide-react";
 
-export default function InputPassword({ label, value, onChange, visible, onToggle }) {
+export default function InputPassword({ label, value, onChange, visible, onToggle, placeholder }) {
 
   return (
 
@@ -23,7 +23,7 @@ export default function InputPassword({ label, value, onChange, visible, onToggl
             onChange(e.target.value)
           }
           className="h-12 w-full rounded-md border border-slate-200 bg-slate-50 pl-11 pr-12 text-slate-800 outline-none transition focus:border-orange-400 focus:bg-white focus:ring-2 focus:ring-orange-100"
-          placeholder="Nhập mật khẩu..."
+          placeholder={placeholder}
         />
 
         <button

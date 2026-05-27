@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { CheckCircle2, Clock3, Search } from "lucide-react";
+import { CheckCircle2, Clock3, Eye, Search, X } from "lucide-react";
 
 import { readPayments, updatePayment } from "../../../api/paymentApi";
 import { readTours } from "../../../api/tourApi";
@@ -41,12 +41,30 @@ function getStatusClass(status) {
   return "bg-orange-50 text-orange-700";
 }
 
+function DetailField({
+  label,
+  value,
+}) {
+  return (
+    <div>
+      <p className="text-xs font-semibold uppercase text-slate-400">
+        {label}
+      </p>
+
+      <p className="mt-1 text-sm font-medium text-slate-800">
+        {value || "Không có"}
+      </p>
+    </div>
+  );
+}
+
 export default function PaymentManagementPage() {
   const [payments, setPayments] = useState([]);
   const [tours, setTours] = useState([]);
   const [keyword, setKeyword] = useState("");
   const [loading, setLoading] = useState(false);
   const [updatingId, setUpdatingId] = useState("");
+  const [selectedPayment, setSelectedPayment] = useState(null);
 
   const fetchData = async () => {
     try {
@@ -82,13 +100,23 @@ export default function PaymentManagementPage() {
       const booking = payment.booking || {};
       const user = booking.user || {};
       const schedule = booking.schedule || {};
-      const tour = tourById[String(schedule.tourId)] || {};
+      const tourId =
+        schedule.tourId ||
+        schedule.tour?.id ||
+        booking.tourId;
+      const tour =
+        schedule.tour ||
+        tourById[String(tourId)] ||
+        {};
 
       return {
         id: payment.id || "",
         amount: payment.amount,
         status: normalizeStatus(payment.status),
-        bookingId: booking.id || "",
+        bookingId:
+          payment.bookingId ||
+          booking.id ||
+          "",
         customerName: user.fullName || "Chưa cập nhật",
         customerEmail: user.email || "",
         customerPhone: user.phoneNumber || "",
@@ -212,14 +240,12 @@ export default function PaymentManagementPage() {
           </div>
 
           <div className="overflow-x-auto rounded-lg border border-slate-100">
-            <table className="w-full min-w-[1150px] text-left text-sm">
+            <table className="w-full min-w-[980px] text-left text-sm">
               <thead className="bg-blue-50 text-slate-700">
                 <tr>
                   <th className="p-3">Mã payment</th>
-                  <th className="p-3">Mã booking</th>
                   <th className="p-3">Khách hàng</th>
                   <th className="p-3">Tour</th>
-                  <th className="p-3">Lịch trình</th>
                   <th className="p-3">Số tiền</th>
                   <th className="p-3">Trạng thái</th>
                   <th className="p-3 text-right">Thao tác</th>
@@ -236,10 +262,6 @@ export default function PaymentManagementPage() {
                       #{payment.id}
                     </td>
 
-                    <td className="p-3 font-semibold text-slate-700">
-                      #{payment.bookingId}
-                    </td>
-
                     <td className="p-3">
                       <p className="font-semibold text-slate-800">
                         {payment.customerName}
@@ -253,11 +275,7 @@ export default function PaymentManagementPage() {
                     <td className="p-3 text-slate-600">
                       {payment.tourTitle}
                     </td>
-
-                    <td className="p-3 text-slate-500">
-                      {formatDate(payment.startDate)} - {formatDate(payment.endDate)}
-                    </td>
-
+                    
                     <td className="p-3 font-bold text-blue-600">
                       {formatPrice(payment.amount)}
                     </td>
@@ -273,28 +291,39 @@ export default function PaymentManagementPage() {
                     </td>
 
                     <td className="p-3 text-right">
-                      {payment.status !== "PAID" ? (
+                      <div className="flex flex-wrap justify-end gap-2">
                         <button
                           type="button"
-                          disabled={updatingId === payment.id}
-                          onClick={() => handleUpdateStatus(payment.id, "PAID")}
-                          className="inline-flex items-center gap-1 rounded-md bg-green-500 px-3 py-2 font-semibold text-white transition hover:bg-green-600 disabled:cursor-not-allowed disabled:opacity-70"
+                          onClick={() => setSelectedPayment(payment)}
+                          className="inline-flex items-center gap-1 rounded-md bg-blue-50 px-3 py-2 font-semibold text-blue-600 transition hover:bg-blue-100"
                         >
-                          <CheckCircle2 size={16} />
-                          Đã thanh toán
+                          <Eye size={16} />
+                          Xem chi tiết
                         </button>
-                      ) : (
-                        <span className="text-sm font-semibold text-slate-400">
-                          Hoàn tất
-                        </span>
-                      )}
+
+                        {payment.status !== "PAID" ? (
+                          <button
+                            type="button"
+                            disabled={updatingId === payment.id}
+                            onClick={() => handleUpdateStatus(payment.id, "PAID")}
+                            className="inline-flex items-center gap-1 rounded-md bg-green-500 px-3 py-2 font-semibold text-white transition hover:bg-green-600 disabled:cursor-not-allowed disabled:opacity-70"
+                          >
+                            <CheckCircle2 size={16} />
+                            Đã thanh toán
+                          </button>
+                        ) : (
+                          <span className="inline-flex items-center rounded-md bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-400">
+                            Hoàn tất
+                          </span>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}
 
                 {!loading && filteredPayments.length === 0 && (
                   <tr>
-                    <td colSpan="8" className="p-8 text-center text-slate-500">
+                    <td colSpan="6" className="p-8 text-center text-slate-500">
                       Không tìm thấy payment phù hợp.
                     </td>
                   </tr>
@@ -303,6 +332,113 @@ export default function PaymentManagementPage() {
             </table>
           </div>
         </section>
+
+        {selectedPayment && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/45 px-4 py-6">
+            <div className="w-full max-w-2xl rounded-lg bg-white shadow-xl">
+              <div className="flex items-start justify-between gap-4 border-b border-slate-100 p-5">
+                <div>
+                  <p className="text-sm font-semibold text-blue-600">
+                    Payment #{selectedPayment.id}
+                  </p>
+
+                  <h3 className="mt-1 text-xl font-bold text-slate-900">
+                    Chi tiết thanh toán
+                  </h3>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setSelectedPayment(null)}
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-md text-slate-500 transition hover:bg-slate-100 hover:text-slate-800"
+                  aria-label="Đóng chi tiết payment"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+
+              <div className="grid gap-5 p-5 sm:grid-cols-2">
+                <DetailField
+                  label="Mã payment"
+                  value={`#${selectedPayment.id}`}
+                />
+
+                <DetailField
+                  label="Mã booking"
+                  value={
+                    selectedPayment.bookingId
+                      ? `#${selectedPayment.bookingId}`
+                      : ""
+                  }
+                />
+
+                <DetailField
+                  label="Khách hàng"
+                  value={selectedPayment.customerName}
+                />
+
+                <DetailField
+                  label="Liên hệ"
+                  value={
+                    selectedPayment.customerPhone ||
+                    selectedPayment.customerEmail
+                  }
+                />
+
+                <DetailField
+                  label="Tour"
+                  value={selectedPayment.tourTitle}
+                />
+
+                <DetailField
+                  label="Lịch trình"
+                  value={`${formatDate(
+                    selectedPayment.startDate
+                  )} - ${formatDate(
+                    selectedPayment.endDate
+                  )}`}
+                />
+
+                <DetailField
+                  label="Số lượng"
+                  value={selectedPayment.quantity}
+                />
+
+                <DetailField
+                  label="Số tiền"
+                  value={formatPrice(selectedPayment.amount)}
+                />
+
+                <DetailField
+                  label="Trạng thái"
+                  value={getStatusLabel(selectedPayment.status)}
+                />
+
+                <div className="sm:col-span-2">
+                  <div className="rounded-lg bg-slate-50 p-4">
+                    <p className="text-xs font-semibold uppercase text-slate-400">
+                      Ghi chú booking
+                    </p>
+
+                    <p className="mt-2 whitespace-pre-line text-sm text-slate-700">
+                      {selectedPayment.description || "Không có"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-end border-t border-slate-100 p-5">
+                <button
+                  type="button"
+                  onClick={() => setSelectedPayment(null)}
+                  className="rounded-md bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-700"
+                >
+                  Đóng
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </main>
   );

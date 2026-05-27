@@ -298,7 +298,7 @@ export default function TourDetailPage() {
 
         if (!userId) {
           alert(
-            "Vui lòng đăng nhập."
+            "Cập nhật thông tin cá nhân trước."
           );
 
           return;

@@ -1,27 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-
-import {
-  CalendarDays,
-  CheckCircle2,
-  ClipboardList,
-  Search,
-  Ticket,
-  Wallet,
-  XCircle,
-} from "lucide-react";
-
-import {
-  deleteBooking,
-  readBookings,
-} from "../../../api/bookingApi";
-
-import {
-  createPayment,
-  readPayments,
-} from "../../../api/paymentApi";
-
+import { CheckCircle2, ClipboardList, Eye, Search, Ticket, Wallet, X, XCircle } from "lucide-react";
+import { deleteBooking, readBookings } from "../../../api/bookingApi";
+import { createPayment, readPayments } from "../../../api/paymentApi";
 import { readTours } from "../../../api/tourApi";
-
 import StatCard from "./StartCart";
 
 function getResult(data) {
@@ -31,35 +12,47 @@ function getResult(data) {
 function formatDate(date) {
   if (!date) return "Chưa cập nhật";
 
-  return new Date(date).toLocaleDateString(
-    "vi-VN"
-  );
+  return new Date(date).toLocaleDateString("vi-VN");
 }
 
 function formatPrice(price) {
-  return `${new Intl.NumberFormat(
-    "vi-VN"
-  ).format(Number(price || 0))}đ`;
+  return `${new Intl.NumberFormat("vi-VN").format(Number(price || 0))}đ`;
+}
+
+function DetailField({
+  label,
+  value,
+}) {
+  return (
+    <div>
+      <p className="text-xs font-semibold uppercase text-slate-400">
+        {label}
+      </p>
+
+      <p className="mt-1 text-sm font-medium text-slate-800">
+        {value || "Không có"}
+      </p>
+    </div>
+  );
 }
 
 export default function BookingManagementPage() {
-  const [bookings, setBookings] =
-    useState([]);
+  const [bookings, setBookings] = useState([]);
 
-  const [tours, setTours] =
-    useState([]);
+  const [tours, setTours] = useState([]);
 
-  const [payments, setPayments] =
-    useState([]);
+  const [payments, setPayments] = useState([]);
 
-  const [keyword, setKeyword] =
-    useState("");
+  const [keyword, setKeyword] = useState("");
 
-  const [loading, setLoading] =
-    useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const [processingId, setProcessingId] =
-    useState("");
+  const [processingId, setProcessingId] =  useState("");
+
+  const [
+    selectedBooking,
+    setSelectedBooking,
+  ] = useState(null);
 
   const fetchData = async () => {
     try {
@@ -118,12 +111,15 @@ export default function BookingManagementPage() {
           const schedule =
             booking.schedule || {};
 
+          const tourId =
+            schedule.tourId ||
+            schedule.tour?.id ||
+            booking.tourId;
+
           const tour =
-            tourById[
-              String(
-                schedule.tourId
-              )
-            ] || {};
+            schedule.tour ||
+            tourById[String(tourId)] ||
+            {};
 
           const payment =
             payments.find(
@@ -377,7 +373,7 @@ export default function BookingManagementPage() {
           </div>
 
           <div className="overflow-x-auto rounded-lg border border-slate-100">
-            <table className="w-full min-w-[1320px] text-left text-sm">
+            <table className="w-full min-w-[1040px] text-left text-sm">
               <thead className="bg-blue-50 text-slate-700">
                 <tr>
                   <th className="p-3 font-semibold">
@@ -393,19 +389,11 @@ export default function BookingManagementPage() {
                   </th>
 
                   <th className="p-3 font-semibold">
-                    Lịch trình
-                  </th>
-
-                  <th className="p-3 font-semibold">
                     Số lượng
                   </th>
 
                   <th className="p-3 font-semibold">
                     Tổng tiền
-                  </th>
-
-                  <th className="p-3 font-semibold">
-                    Ghi chú
                   </th>
 
                   <th className="p-3 text-right font-semibold">
@@ -444,23 +432,6 @@ export default function BookingManagementPage() {
                         }
                       </td>
 
-                      <td className="p-3 text-slate-500">
-                        <span className="inline-flex items-center gap-1">
-                          <CalendarDays
-                            size={15}
-                          />
-
-                          {formatDate(
-                            booking.startDate
-                          )}{" "}
-                          -
-                          {" "}
-                          {formatDate(
-                            booking.endDate
-                          )}
-                        </span>
-                      </td>
-
                       <td className="p-3 font-semibold text-slate-700">
                         {
                           booking.quantity
@@ -473,13 +444,20 @@ export default function BookingManagementPage() {
                         )}
                       </td>
 
-                      <td className="p-3 text-slate-500">
-                        {booking.description ||
-                          "Không có"}
-                      </td>
-
                       <td className="p-3">
-                        <div className="flex justify-end gap-2">
+                        <div className="flex flex-wrap justify-end gap-2">
+                          <button
+                            onClick={() =>
+                              setSelectedBooking(
+                                booking
+                              )
+                            }
+                            className="inline-flex items-center gap-1 rounded-md bg-blue-50 px-3 py-2 font-semibold text-blue-600 transition hover:bg-blue-100"
+                          >
+                            <Eye size={16} />
+                            Xem chi tiết
+                          </button>
+
                           {booking.approved ? (
                             <span className="inline-flex items-center gap-1 rounded-md bg-green-50 px-3 py-2 font-semibold text-green-600">
                               <CheckCircle2
@@ -537,7 +515,7 @@ export default function BookingManagementPage() {
                     0 && (
                     <tr>
                       <td
-                        colSpan="8"
+                        colSpan="6"
                         className="p-8 text-center text-slate-500"
                       >
                         Không tìm thấy
@@ -549,6 +527,121 @@ export default function BookingManagementPage() {
             </table>
           </div>
         </section>
+
+        {selectedBooking && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/45 px-4 py-6">
+            <div className="w-full max-w-2xl rounded-lg bg-white shadow-xl">
+              <div className="flex items-start justify-between gap-4 border-b border-slate-100 p-5">
+                <div>
+                  <p className="text-sm font-semibold text-blue-600">
+                    Booking #{selectedBooking.id}
+                  </p>
+
+                  <h3 className="mt-1 text-xl font-bold text-slate-900">
+                    Chi tiết đặt tour
+                  </h3>
+                </div>
+
+                <button
+                  onClick={() =>
+                    setSelectedBooking(null)
+                  }
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-md text-slate-500 transition hover:bg-slate-100 hover:text-slate-800"
+                  aria-label="Đóng chi tiết booking"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+
+              <div className="grid gap-5 p-5 sm:grid-cols-2">
+                <DetailField
+                  label="Khách hàng"
+                  value={
+                    selectedBooking.customerName
+                  }
+                />
+
+                <DetailField
+                  label="Liên hệ"
+                  value={
+                    selectedBooking.customerPhone ||
+                    selectedBooking.customerEmail
+                  }
+                />
+
+                <DetailField
+                  label="Tour"
+                  value={
+                    selectedBooking.tourName
+                  }
+                />
+
+                <DetailField
+                  label="Lịch trình"
+                  value={`${formatDate(
+                    selectedBooking.startDate
+                  )} - ${formatDate(
+                    selectedBooking.endDate
+                  )}`}
+                />
+
+                <DetailField
+                  label="Số lượng"
+                  value={
+                    selectedBooking.quantity
+                  }
+                />
+
+                <DetailField
+                  label="Tổng tiền"
+                  value={formatPrice(
+                    selectedBooking.totalPrice
+                  )}
+                />
+
+                <DetailField
+                  label="Số chỗ"
+                  value={
+                    selectedBooking.slot
+                  }
+                />
+
+                <DetailField
+                  label="Trạng thái"
+                  value={
+                    selectedBooking.approved
+                      ? "Đã duyệt"
+                      : "Chờ duyệt"
+                  }
+                />
+
+                <div className="sm:col-span-2">
+                  <div className="rounded-lg bg-slate-50 p-4">
+                    <p className="text-xs font-semibold uppercase text-slate-400">
+                      Ghi chú
+                    </p>
+
+                    <p className="mt-2 whitespace-pre-line text-sm text-slate-700">
+                      {selectedBooking.description ||
+                        "Không có"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-end border-t border-slate-100 p-5">
+                <button
+                  onClick={() =>
+                    setSelectedBooking(null)
+                  }
+                  className="rounded-md bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-700"
+                >
+                  Đóng
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </main>
   );

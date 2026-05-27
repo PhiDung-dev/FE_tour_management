@@ -113,6 +113,7 @@ export default function ChangePassword() {
         {/* CURRENT PASSWORD */}
         <InputPassword
           label="Mật khẩu hiện tại"
+          placeholder={"Enter current password"}
           value={formData.currentPassword}
           onChange={(value) =>
             handleChange("currentPassword", value)
@@ -129,6 +130,7 @@ export default function ChangePassword() {
         {/* NEW PASSWORD */}
         <InputPassword
           label="Mật khẩu mới"
+          placeholder={"Enter new password"}
           value={formData.newPassword}
           onChange={(value) =>
             handleChange("newPassword", value)
@@ -145,6 +147,7 @@ export default function ChangePassword() {
         {/* CONFIRM PASSWORD */}
         <InputPassword
           label="Xác nhận mật khẩu mới"
+          placeholder={"Confirm new password"}
           value={formData.confirmPassword}
           onChange={(value) =>
             handleChange("confirmPassword", value)
